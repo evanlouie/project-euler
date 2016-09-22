@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Card, CardActions, CardHeader, CardText} from "material-ui/Card";
+import { Card, CardActions, CardHeader, CardText } from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import RaisedButton from "material-ui/RaisedButton";
 import LinearProgress from "material-ui/LinearProgress";
 import Dialog from "material-ui/Dialog";
 
-import {AbstractEulerProblem} from "../lib/EulerProblem";
+import { AbstractEulerProblem } from "../lib/EulerProblem";
 
 export interface ProblemProps {
     question: AbstractEulerProblem;
@@ -13,10 +13,12 @@ export interface ProblemProps {
 
 export interface ProblemState {
     answer: string;
+    answerSource: string;
     isComputing: boolean;
     log: string;
     source: string;
     sourceWindowOpen: boolean;
+    worker: Worker;
 }
 
 export default class Problem extends React.Component<ProblemProps, ProblemState> {
@@ -25,14 +27,36 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
         super(props);
         this.state = {
             answer: "",
+            answerSource: props.question.answer.toString(),
             isComputing: false,
             log: "",
             source: "",
             sourceWindowOpen: false,
+            worker: null,
         };
     }
 
     handleAnswer(event: React.MouseEvent) {
+        // let answerBlob = new Blob([
+        //     this.props.question.answer
+        // ], { type: "text/javascript" });
+        //
+        // const runnable = function() {
+        //     // do something
+        //     let foo = this.props.question;
+        //     postMessage(foo.answer());
+        // }
+        // let blob = new Blob([
+        //     `(${runnable.toString()})()`
+        // ], { type: "text/javascript" })
+        //
+        // // Note: window.webkitURL.createObjectURL() in Chrome 10+.
+        // let worker = new Worker(window.URL.createObjectURL(blob));
+        // worker.onmessage = function(e) {
+        //     console.log("Received: " + e.data);
+        // }
+        // worker.postMessage("hello"); // Start the worker.
+
         this.setState(Object.assign({}, this.state, {
             isComputing: true
         }), () => {
@@ -48,6 +72,7 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
         return fetch(url).then((response) => {
             return response.text();
         });
+        // return this.props.question.constructor.toString();
     }
 
     handleSource(event: React.MouseEvent) {
@@ -56,6 +81,9 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
                 source: codeString
             }));
         });
+        // this.setState(Object.assign({}, this.state, {
+        //     source: this.props.question.constructor.toString()
+        // }));
     }
 
     handleOpenSourceWindow(event: React.MouseEvent) {
@@ -80,9 +108,10 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onTouchTap={(event) => this.handleCloseSourceWindow() }
+                onTouchTap={(event) => this.handleCloseSourceWindow()}
                 />
         ];
+
         return (
             <div className="Problem">
                 <pre>
@@ -102,7 +131,7 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
                             className="problem-text"
                             style={{ whiteSpace: "pre-wrap" }}
                             >
-                            {this.props.question.question.replace(/\t/g, "") }
+                            {this.props.question.question.replace(/\t/g, "")}
                         </pre>
                         {
                             (this.state.isComputing && this.state.answer === "") ?
@@ -113,10 +142,10 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
                     <CardActions>
                         <FlatButton
                             label="Source Code"
-                            onClick={(event) => this.handleOpenSourceWindow(event) } />
+                            onClick={(event) => this.handleOpenSourceWindow(event)} />
                         <FlatButton
                             label="Answer"
-                            onClick={(event) => this.handleAnswer(event) } />
+                            onClick={(event) => this.handleAnswer(event)} />
                     </CardActions>
                 </Card>
                 <Dialog
@@ -124,14 +153,16 @@ export default class Problem extends React.Component<ProblemProps, ProblemState>
                     actions={actions}
                     modal={false}
                     open={this.state.sourceWindowOpen}
-                    onRequestClose={(event) => this.handleCloseSourceWindow() }
+                    onRequestClose={(event) => this.handleCloseSourceWindow()}
                     autoScrollBodyContent={true}
                     >
                     {
                         this.state.source === "" && this.state.sourceWindowOpen ?
                             <LinearProgress mode="indeterminate" style={{ margin: "1em 0 0 0" }} /> :
                             <pre style={{ whiteSpace: "pre-wrap" }}>
-                                {this.state.source}
+                                <code>
+                                    {this.state.source}
+                                </code>
                             </pre>
                     }
                 </Dialog>

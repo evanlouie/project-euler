@@ -1,4 +1,4 @@
-import {IEulerProblem} from "./EulerProblem";
+import { IEulerProblem } from "./EulerProblem";
 import EulerProblem1 from "./EulerProblem1";
 import EulerProblem2 from "./EulerProblem2";
 import EulerProblem3 from "./EulerProblem3";

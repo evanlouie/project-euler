@@ -5,7 +5,8 @@
         "react": "registry:dt/react#0.14.0+20160920055104",
         "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
         "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434",
-        "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160829180742"
+        "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160829180742",
+        "whatwg-streams": "registry:dt/whatwg-streams#0.0.0+20160829180742"
     },
     "dependencies": {
         "object-assign": "registry:npm/object-assign#4.0.1+20160301180549"
