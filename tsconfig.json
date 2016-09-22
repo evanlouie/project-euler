@@ -10,13 +10,13 @@
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "outDir": "./dist/",
+        "strictNullChecks": true,
         "target": "es6"
     },
     "exclude": [
         "dist",
         "node_modules"
     ],
-
     // atom-typescript: https://github.com/TypeStrong/atom-typescript/blob/master/docs/tsconfig.md
     "formatCodeOptions": {
         "indentSize": 4,

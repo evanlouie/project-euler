@@ -48,20 +48,22 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	const Problem_1 = __webpack_require__(/*! ./components/Problem */ 342);
+	const lib_1 = __webpack_require__(/*! ./lib */ 405);
+	const MuiThemeProvider_1 = __webpack_require__(/*! material-ui/styles/MuiThemeProvider */ 178);
 	const React = __webpack_require__(/*! react */ 1);
 	const ReactDOM = __webpack_require__(/*! react-dom */ 34);
 	const injectTapEventPlugin = __webpack_require__(/*! react-tap-event-plugin */ 172);
-	const MuiThemeProvider_1 = __webpack_require__(/*! material-ui/styles/MuiThemeProvider */ 178);
-	const Problem_1 = __webpack_require__(/*! ./components/Problem */ 342);
-	const lib_1 = __webpack_require__(/*! ./lib */ 405);
 	injectTapEventPlugin();
 	const problems = lib_1.getProblems();
-	ReactDOM.render(React.createElement(MuiThemeProvider_1.default, null, React.createElement("div", {className: "ProjectEuler", style: {
-	    maxWidth: "1000px",
-	    margin: "0 auto"
-	}}, problems.map((problem) => {
-	    return React.createElement(Problem_1.default, {key: problem.problemNumber, question: problem});
-	}))), document.querySelector("#app"));
+	ReactDOM.render(React.createElement(MuiThemeProvider_1.default, null, 
+	    React.createElement("div", {className: "ProjectEuler", style: {
+	        margin: "0 auto",
+	        maxWidth: "1000px",
+	    }}, problems.map((problem) => {
+	        return React.createElement(Problem_1.default, {key: problem.problemNumber, question: problem});
+	    }))
+	), document.querySelector("#app"));
 
 
 /***/ },
@@ -29868,11 +29870,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const React = __webpack_require__(/*! react */ 1);
 	const Card_1 = __webpack_require__(/*! material-ui/Card */ 343);
-	const FlatButton_1 = __webpack_require__(/*! material-ui/FlatButton */ 394);
-	const LinearProgress_1 = __webpack_require__(/*! material-ui/LinearProgress */ 397);
-	const Dialog_1 = __webpack_require__(/*! material-ui/Dialog */ 399);
+	const Dialog_1 = __webpack_require__(/*! material-ui/Dialog */ 394);
+	const FlatButton_1 = __webpack_require__(/*! material-ui/FlatButton */ 400);
+	const LinearProgress_1 = __webpack_require__(/*! material-ui/LinearProgress */ 403);
+	const React = __webpack_require__(/*! react */ 1);
 	class Problem extends React.Component {
 	    constructor(props) {
 	        super(props);
@@ -29887,32 +29889,20 @@
 	        };
 	    }
 	    handleAnswer(event) {
-	        // let answerBlob = new Blob([
-	        //     this.props.question.answer
-	        // ], { type: "text/javascript" });
-	        //
-	        // const runnable = function() {
-	        //     // do something
-	        //     let foo = this.props.question;
-	        //     postMessage(foo.answer());
-	        // }
-	        // let blob = new Blob([
-	        //     `(${runnable.toString()})()`
-	        // ], { type: "text/javascript" })
-	        //
-	        // // Note: window.webkitURL.createObjectURL() in Chrome 10+.
-	        // let worker = new Worker(window.URL.createObjectURL(blob));
-	        // worker.onmessage = function(e) {
-	        //     console.log("Received: " + e.data);
-	        // }
-	        // worker.postMessage("hello"); // Start the worker.
 	        this.setState(Object.assign({}, this.state, {
-	            isComputing: true
+	            isComputing: true,
 	        }), () => {
-	            this.setState(Object.assign({}, this.state, {
-	                answer: this.props.question.benchmark(),
-	                isComputing: false
-	            }));
+	            const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
+	            const runnable = new Blob([response], { type: "text/javascript" });
+	            const worker = new Worker(window.URL.createObjectURL(runnable));
+	            worker.onmessage = (e) => {
+	                console.log("Received: " + e.data);
+	                this.setState(Object.assign({}, this.state, {
+	                    answer: e.data,
+	                    isComputing: false,
+	                }));
+	            };
+	            worker.postMessage("WORK!!!"); // Start the worker.
 	        });
 	    }
 	    getSource() {
@@ -29925,7 +29915,7 @@
 	    handleSource(event) {
 	        this.getSource().then((codeString) => {
 	            this.setState(Object.assign({}, this.state, {
-	                source: codeString
+	                source: codeString,
 	            }));
 	        });
 	        // this.setState(Object.assign({}, this.state, {
@@ -29934,27 +29924,39 @@
 	    }
 	    handleOpenSourceWindow(event) {
 	        this.setState(Object.assign({}, this.state, {
-	            sourceWindowOpen: true
+	            sourceWindowOpen: true,
 	        }), () => {
 	            this.handleSource(event);
 	        });
 	    }
 	    handleCloseSourceWindow() {
 	        this.setState(Object.assign({}, this.state, {
-	            sourceWindowOpen: false
+	            sourceWindowOpen: false,
 	        }));
 	    }
 	    render() {
 	        const title = `Problem ${this.props.question.problemNumber}`;
 	        const subtitle = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
 	        const actions = [
-	            React.createElement(FlatButton_1.default, {label: "Cancel", primary: true, onTouchTap: (event) => this.handleCloseSourceWindow()})
+	            React.createElement(FlatButton_1.default, {label: "Cancel", primary: true, onTouchTap: (event) => this.handleCloseSourceWindow()}),
 	        ];
-	        return (React.createElement("div", {className: "Problem"}, React.createElement("pre", null, JSON.stringify(this.state, null, 2)), React.createElement(Card_1.Card, null, React.createElement(Card_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), React.createElement(Card_1.CardText, {expandable: false}, React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "")), (this.state.isComputing && this.state.answer === "") ?
-	            React.createElement(LinearProgress_1.default, {mode: "indeterminate"}) :
-	            this.state.answer), React.createElement(Card_1.CardActions, null, React.createElement(FlatButton_1.default, {label: "Source Code", onClick: (event) => this.handleOpenSourceWindow(event)}), React.createElement(FlatButton_1.default, {label: "Answer", onClick: (event) => this.handleAnswer(event)}))), React.createElement(Dialog_1.default, {title: "Scrollable Dialog", actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: (event) => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
-	            React.createElement(LinearProgress_1.default, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
-	            React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, React.createElement("code", null, this.state.source)))));
+	        return (React.createElement("div", {className: "Problem"}, 
+	            React.createElement("pre", null), 
+	            React.createElement(Card_1.Card, null, 
+	                React.createElement(Card_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
+	                React.createElement(Card_1.CardText, {expandable: false}, 
+	                    React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")), 
+	                    (this.state.isComputing && this.state.answer === "") ?
+	                        React.createElement(LinearProgress_1.default, {mode: "indeterminate"}) :
+	                        this.state.answer), 
+	                React.createElement(Card_1.CardActions, null, 
+	                    React.createElement(FlatButton_1.default, {label: "Source Code", onClick: (event) => this.handleOpenSourceWindow(event)}), 
+	                    React.createElement(FlatButton_1.default, {label: "Answer", onClick: (event) => this.handleAnswer(event)}))), 
+	            React.createElement(Dialog_1.default, {title: "Scrollable Dialog", actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: (event) => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
+	                React.createElement(LinearProgress_1.default, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
+	                React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, 
+	                    React.createElement("code", null, this.state.source)
+	                ))));
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -35034,676 +35036,6 @@
 
 /***/ },
 /* 394 */
-/*!*******************************************!*\
-  !*** ./~/material-ui/FlatButton/index.js ***!
-  \*******************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-	
-	var _FlatButton = __webpack_require__(/*! ./FlatButton */ 395);
-	
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = _FlatButton2.default;
-
-/***/ },
-/* 395 */
-/*!************************************************!*\
-  !*** ./~/material-ui/FlatButton/FlatButton.js ***!
-  \************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _simpleAssign = __webpack_require__(/*! simple-assign */ 345);
-	
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _transitions = __webpack_require__(/*! ../styles/transitions */ 349);
-	
-	var _transitions2 = _interopRequireDefault(_transitions);
-	
-	var _childUtils = __webpack_require__(/*! ../utils/childUtils */ 368);
-	
-	var _colorManipulator = __webpack_require__(/*! ../utils/colorManipulator */ 300);
-	
-	var _EnhancedButton = __webpack_require__(/*! ../internal/EnhancedButton */ 367);
-	
-	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
-	
-	var _FlatButtonLabel = __webpack_require__(/*! ./FlatButtonLabel */ 396);
-	
-	var _FlatButtonLabel2 = _interopRequireDefault(_FlatButtonLabel);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	function validateLabel(props, propName, componentName) {
-	  if (process.env.NODE_ENV !== 'production') {
-	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
-	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
-	    }
-	  }
-	}
-	
-	var FlatButton = function (_Component) {
-	  _inherits(FlatButton, _Component);
-	
-	  function FlatButton() {
-	    var _Object$getPrototypeO;
-	
-	    var _temp, _this, _ret;
-	
-	    _classCallCheck(this, FlatButton);
-	
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-	
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(FlatButton)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
-	      hovered: false,
-	      isKeyboardFocused: false,
-	      touch: false
-	    }, _this.handleKeyboardFocus = function (event, isKeyboardFocused) {
-	      _this.setState({ isKeyboardFocused: isKeyboardFocused });
-	      _this.props.onKeyboardFocus(event, isKeyboardFocused);
-	    }, _this.handleMouseEnter = function (event) {
-	      // Cancel hover styles for touch devices
-	      if (!_this.state.touch) _this.setState({ hovered: true });
-	      _this.props.onMouseEnter(event);
-	    }, _this.handleMouseLeave = function (event) {
-	      _this.setState({ hovered: false });
-	      _this.props.onMouseLeave(event);
-	    }, _this.handleTouchStart = function (event) {
-	      _this.setState({ touch: true });
-	      _this.props.onTouchStart(event);
-	    }, _temp), _possibleConstructorReturn(_this, _ret);
-	  }
-	
-	  _createClass(FlatButton, [{
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      if (nextProps.disabled && this.state.hovered) {
-	        this.setState({
-	          hovered: false
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var children = _props.children;
-	      var disabled = _props.disabled;
-	      var hoverColor = _props.hoverColor;
-	      var backgroundColor = _props.backgroundColor;
-	      var icon = _props.icon;
-	      var label = _props.label;
-	      var labelStyle = _props.labelStyle;
-	      var labelPosition = _props.labelPosition;
-	      var primary = _props.primary;
-	      var rippleColor = _props.rippleColor;
-	      var secondary = _props.secondary;
-	      var style = _props.style;
-	
-	      var other = _objectWithoutProperties(_props, ['children', 'disabled', 'hoverColor', 'backgroundColor', 'icon', 'label', 'labelStyle', 'labelPosition', 'primary', 'rippleColor', 'secondary', 'style']);
-	
-	      var _context$muiTheme = this.context.muiTheme;
-	      var _context$muiTheme$but = _context$muiTheme.button;
-	      var buttonHeight = _context$muiTheme$but.height;
-	      var buttonMinWidth = _context$muiTheme$but.minWidth;
-	      var buttonTextTransform = _context$muiTheme$but.textTransform;
-	      var _context$muiTheme$fla = _context$muiTheme.flatButton;
-	      var buttonFilterColor = _context$muiTheme$fla.buttonFilterColor;
-	      var buttonColor = _context$muiTheme$fla.color;
-	      var disabledTextColor = _context$muiTheme$fla.disabledTextColor;
-	      var fontSize = _context$muiTheme$fla.fontSize;
-	      var fontWeight = _context$muiTheme$fla.fontWeight;
-	      var primaryTextColor = _context$muiTheme$fla.primaryTextColor;
-	      var secondaryTextColor = _context$muiTheme$fla.secondaryTextColor;
-	      var textColor = _context$muiTheme$fla.textColor;
-	      var _context$muiTheme$fla2 = _context$muiTheme$fla.textTransform;
-	      var textTransform = _context$muiTheme$fla2 === undefined ? buttonTextTransform || 'uppercase' : _context$muiTheme$fla2;
-	
-	      var defaultTextColor = disabled ? disabledTextColor : primary ? primaryTextColor : secondary ? secondaryTextColor : textColor;
-	
-	      var defaultHoverColor = (0, _colorManipulator.fade)(buttonFilterColor, 0.2);
-	      var defaultRippleColor = buttonFilterColor;
-	      var buttonHoverColor = hoverColor || defaultHoverColor;
-	      var buttonRippleColor = rippleColor || defaultRippleColor;
-	      var buttonBackgroundColor = backgroundColor || buttonColor;
-	      var hovered = (this.state.hovered || this.state.isKeyboardFocused) && !disabled;
-	
-	      var mergedRootStyles = (0, _simpleAssign2.default)({}, {
-	        height: buttonHeight,
-	        lineHeight: buttonHeight + 'px',
-	        minWidth: buttonMinWidth,
-	        color: defaultTextColor,
-	        transition: _transitions2.default.easeOut(),
-	        borderRadius: 2,
-	        userSelect: 'none',
-	        position: 'relative',
-	        overflow: 'hidden',
-	        backgroundColor: hovered ? buttonHoverColor : buttonBackgroundColor,
-	        padding: 0,
-	        margin: 0,
-	        textAlign: 'center'
-	      }, style);
-	
-	      var iconCloned = void 0;
-	      var labelStyleIcon = {};
-	
-	      if (icon) {
-	        var iconStyles = (0, _simpleAssign2.default)({
-	          verticalAlign: 'middle',
-	          marginLeft: label && labelPosition !== 'before' ? 12 : 0,
-	          marginRight: label && labelPosition === 'before' ? 12 : 0
-	        }, icon.props.style);
-	        iconCloned = _react2.default.cloneElement(icon, {
-	          color: icon.props.color || mergedRootStyles.color,
-	          style: iconStyles
-	        });
-	
-	        if (labelPosition === 'before') {
-	          labelStyleIcon.paddingRight = 8;
-	        } else {
-	          labelStyleIcon.paddingLeft = 8;
-	        }
-	      }
-	
-	      var mergedLabelStyles = (0, _simpleAssign2.default)({
-	        letterSpacing: 0,
-	        textTransform: textTransform,
-	        fontWeight: fontWeight,
-	        fontSize: fontSize
-	      }, labelStyleIcon, labelStyle);
-	
-	      var labelElement = label ? _react2.default.createElement(_FlatButtonLabel2.default, { label: label, style: mergedLabelStyles }) : undefined;
-	
-	      // Place label before or after children.
-	      var childrenFragment = labelPosition === 'before' ? {
-	        labelElement: labelElement,
-	        iconCloned: iconCloned,
-	        children: children
-	      } : {
-	        children: children,
-	        iconCloned: iconCloned,
-	        labelElement: labelElement
-	      };
-	
-	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
-	
-	      return _react2.default.createElement(
-	        _EnhancedButton2.default,
-	        _extends({}, other, {
-	          disabled: disabled,
-	          focusRippleColor: buttonRippleColor,
-	          focusRippleOpacity: 0.3,
-	          onKeyboardFocus: this.handleKeyboardFocus,
-	          onMouseLeave: this.handleMouseLeave,
-	          onMouseEnter: this.handleMouseEnter,
-	          onTouchStart: this.handleTouchStart,
-	          style: mergedRootStyles,
-	          touchRippleColor: buttonRippleColor,
-	          touchRippleOpacity: 0.3
-	        }),
-	        enhancedButtonChildren
-	      );
-	    }
-	  }]);
-	
-	  return FlatButton;
-	}(_react.Component);
-	
-	FlatButton.muiName = 'FlatButton';
-	FlatButton.propTypes = {
-	  /**
-	   * Color of button when mouse is not hovering over it.
-	   */
-	  backgroundColor: _react.PropTypes.string,
-	  /**
-	   * This is what will be displayed inside the button.
-	   * If a label is specified, the text within the label prop will
-	   * be displayed. Otherwise, the component will expect children
-	   * which will then be displayed. (In our example,
-	   * we are nesting an `<input type="file" />` and a `span`
-	   * that acts as our label to be displayed.) This only
-	   * applies to flat and raised buttons.
-	   */
-	  children: _react.PropTypes.node,
-	  /**
-	   * Disables the button if set to true.
-	   */
-	  disabled: _react.PropTypes.bool,
-	  /**
-	   * Color of button when mouse hovers over.
-	   */
-	  hoverColor: _react.PropTypes.string,
-	  /**
-	   * The URL to link to when the button is clicked.
-	   */
-	  href: _react.PropTypes.string,
-	  /**
-	   * Use this property to display an icon.
-	   */
-	  icon: _react.PropTypes.node,
-	  /**
-	   * Label for the button.
-	   */
-	  label: validateLabel,
-	  /**
-	   * Place label before or after the passed children.
-	   */
-	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
-	  /**
-	   * Override the inline-styles of the button's label element.
-	   */
-	  labelStyle: _react.PropTypes.object,
-	  /**
-	   * Callback function fired when the element is focused or blurred by the keyboard.
-	   *
-	   * @param {object} event `focus` or `blur` event targeting the element.
-	   * @param {boolean} isKeyboardFocused Indicates whether the element is focused.
-	   */
-	  onKeyboardFocus: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseEnter: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseLeave: _react.PropTypes.func,
-	  /** @ignore */
-	  onTouchStart: _react.PropTypes.func,
-	  /**
-	   * If true, colors button according to
-	   * primaryTextColor from the Theme.
-	   */
-	  primary: _react.PropTypes.bool,
-	  /**
-	   * Color for the ripple after button is clicked.
-	   */
-	  rippleColor: _react.PropTypes.string,
-	  /**
-	   * If true, colors button according to secondaryTextColor from the theme.
-	   * The primary prop has precendent if set to true.
-	   */
-	  secondary: _react.PropTypes.bool,
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object
-	};
-	FlatButton.defaultProps = {
-	  disabled: false,
-	  labelStyle: {},
-	  labelPosition: 'after',
-	  onKeyboardFocus: function onKeyboardFocus() {},
-	  onMouseEnter: function onMouseEnter() {},
-	  onMouseLeave: function onMouseLeave() {},
-	  onTouchStart: function onTouchStart() {},
-	  primary: false,
-	  secondary: false
-	};
-	FlatButton.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	exports.default = FlatButton;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 3)))
-
-/***/ },
-/* 396 */
-/*!*****************************************************!*\
-  !*** ./~/material-ui/FlatButton/FlatButtonLabel.js ***!
-  \*****************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _simpleAssign = __webpack_require__(/*! simple-assign */ 345);
-	
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	function getStyles(props, context) {
-	  var baseTheme = context.muiTheme.baseTheme;
-	
-	
-	  return {
-	    root: {
-	      position: 'relative',
-	      paddingLeft: baseTheme.spacing.desktopGutterLess,
-	      paddingRight: baseTheme.spacing.desktopGutterLess,
-	      verticalAlign: 'middle'
-	    }
-	  };
-	}
-	
-	var FlatButtonLabel = function (_Component) {
-	  _inherits(FlatButtonLabel, _Component);
-	
-	  function FlatButtonLabel() {
-	    _classCallCheck(this, FlatButtonLabel);
-	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(FlatButtonLabel).apply(this, arguments));
-	  }
-	
-	  _createClass(FlatButtonLabel, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var label = _props.label;
-	      var style = _props.style;
-	      var prepareStyles = this.context.muiTheme.prepareStyles;
-	
-	      var styles = getStyles(this.props, this.context);
-	
-	      return _react2.default.createElement(
-	        'span',
-	        { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) },
-	        label
-	      );
-	    }
-	  }]);
-	
-	  return FlatButtonLabel;
-	}(_react.Component);
-	
-	FlatButtonLabel.propTypes = {
-	  label: _react.PropTypes.node,
-	  style: _react.PropTypes.object
-	};
-	FlatButtonLabel.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	exports.default = FlatButtonLabel;
-
-/***/ },
-/* 397 */
-/*!***********************************************!*\
-  !*** ./~/material-ui/LinearProgress/index.js ***!
-  \***********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-	
-	var _LinearProgress = __webpack_require__(/*! ./LinearProgress */ 398);
-	
-	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = _LinearProgress2.default;
-
-/***/ },
-/* 398 */
-/*!********************************************************!*\
-  !*** ./~/material-ui/LinearProgress/LinearProgress.js ***!
-  \********************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _simpleAssign = __webpack_require__(/*! simple-assign */ 345);
-	
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _transitions = __webpack_require__(/*! ../styles/transitions */ 349);
-	
-	var _transitions2 = _interopRequireDefault(_transitions);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	function getRelativeValue(value, min, max) {
-	  var clampedValue = Math.min(Math.max(min, value), max);
-	  var rangeValue = max - min;
-	  var relValue = Math.round((clampedValue - min) / rangeValue * 10000) / 10000;
-	  return relValue * 100;
-	}
-	
-	function getStyles(props, context) {
-	  var max = props.max;
-	  var min = props.min;
-	  var value = props.value;
-	  var palette = context.muiTheme.baseTheme.palette;
-	
-	
-	  var styles = {
-	    root: {
-	      position: 'relative',
-	      height: 4,
-	      display: 'block',
-	      width: '100%',
-	      backgroundColor: palette.primary3Color,
-	      borderRadius: 2,
-	      margin: 0,
-	      overflow: 'hidden'
-	    },
-	    bar: {
-	      height: '100%'
-	    },
-	    barFragment1: {},
-	    barFragment2: {}
-	  };
-	
-	  if (props.mode === 'indeterminate') {
-	    styles.barFragment1 = {
-	      position: 'absolute',
-	      backgroundColor: props.color || palette.primary1Color,
-	      top: 0,
-	      left: 0,
-	      bottom: 0,
-	      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.650, 0.815, 0.735, 0.395)')
-	    };
-	
-	    styles.barFragment2 = {
-	      position: 'absolute',
-	      backgroundColor: props.color || palette.primary1Color,
-	      top: 0,
-	      left: 0,
-	      bottom: 0,
-	      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)')
-	    };
-	  } else {
-	    styles.bar.backgroundColor = props.color || palette.primary1Color;
-	    styles.bar.transition = _transitions2.default.create('width', '.3s', null, 'linear');
-	    styles.bar.width = getRelativeValue(value, min, max) + '%';
-	  }
-	
-	  return styles;
-	}
-	
-	var LinearProgress = function (_Component) {
-	  _inherits(LinearProgress, _Component);
-	
-	  function LinearProgress() {
-	    _classCallCheck(this, LinearProgress);
-	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(LinearProgress).apply(this, arguments));
-	  }
-	
-	  _createClass(LinearProgress, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      this.timers = {};
-	
-	      this.timers.bar1 = this.barUpdate('bar1', 0, this.refs.bar1, [[-35, 100], [100, -90]]);
-	
-	      this.timers.bar2 = setTimeout(function () {
-	        _this2.barUpdate('bar2', 0, _this2.refs.bar2, [[-200, 100], [107, -8]]);
-	      }, 850);
-	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      clearTimeout(this.timers.bar1);
-	      clearTimeout(this.timers.bar2);
-	    }
-	  }, {
-	    key: 'barUpdate',
-	    value: function barUpdate(id, step, barElement, stepValues) {
-	      var _this3 = this;
-	
-	      if (this.props.mode !== 'indeterminate') return;
-	
-	      step = step || 0;
-	      step %= 4;
-	
-	      var right = this.context.muiTheme.isRtl ? 'left' : 'right';
-	      var left = this.context.muiTheme.isRtl ? 'right' : 'left';
-	
-	      if (step === 0) {
-	        barElement.style[left] = stepValues[0][0] + '%';
-	        barElement.style[right] = stepValues[0][1] + '%';
-	      } else if (step === 1) {
-	        barElement.style.transitionDuration = '840ms';
-	      } else if (step === 2) {
-	        barElement.style[left] = stepValues[1][0] + '%';
-	        barElement.style[right] = stepValues[1][1] + '%';
-	      } else if (step === 3) {
-	        barElement.style.transitionDuration = '0ms';
-	      }
-	      this.timers[id] = setTimeout(function () {
-	        return _this3.barUpdate(id, step + 1, barElement, stepValues);
-	      }, 420);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var style = _props.style;
-	
-	      var other = _objectWithoutProperties(_props, ['style']);
-	
-	      var prepareStyles = this.context.muiTheme.prepareStyles;
-	
-	      var styles = getStyles(this.props, this.context);
-	
-	      return _react2.default.createElement(
-	        'div',
-	        _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
-	        _react2.default.createElement(
-	          'div',
-	          { style: prepareStyles(styles.bar) },
-	          _react2.default.createElement('div', { ref: 'bar1', style: prepareStyles(styles.barFragment1) }),
-	          _react2.default.createElement('div', { ref: 'bar2', style: prepareStyles(styles.barFragment2) })
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return LinearProgress;
-	}(_react.Component);
-	
-	LinearProgress.propTypes = {
-	  /**
-	   * The mode of show your progress, indeterminate for
-	   * when there is no value for progress.
-	   */
-	  color: _react.PropTypes.string,
-	  /**
-	   * The max value of progress, only works in determinate mode.
-	   */
-	  max: _react.PropTypes.number,
-	  /**
-	   * The min value of progress, only works in determinate mode.
-	   */
-	  min: _react.PropTypes.number,
-	  /**
-	   * The mode of show your progress, indeterminate for when
-	   * there is no value for progress.
-	   */
-	  mode: _react.PropTypes.oneOf(['determinate', 'indeterminate']),
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object,
-	  /**
-	   * The value of progress, only works in determinate mode.
-	   */
-	  value: _react.PropTypes.number
-	};
-	LinearProgress.defaultProps = {
-	  mode: 'indeterminate',
-	  value: 0,
-	  min: 0,
-	  max: 100
-	};
-	LinearProgress.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	exports.default = LinearProgress;
-
-/***/ },
-/* 399 */
 /*!***************************************!*\
   !*** ./~/material-ui/Dialog/index.js ***!
   \***************************************/
@@ -35716,7 +35048,7 @@
 	});
 	exports.default = undefined;
 	
-	var _Dialog = __webpack_require__(/*! ./Dialog */ 400);
+	var _Dialog = __webpack_require__(/*! ./Dialog */ 395);
 	
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 	
@@ -35725,7 +35057,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 400 */
+/* 395 */
 /*!****************************************!*\
   !*** ./~/material-ui/Dialog/Dialog.js ***!
   \****************************************/
@@ -35753,7 +35085,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _reactEventListener = __webpack_require__(/*! react-event-listener */ 401);
+	var _reactEventListener = __webpack_require__(/*! react-event-listener */ 396);
 	
 	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
 	
@@ -35765,11 +35097,11 @@
 	
 	var _transitions2 = _interopRequireDefault(_transitions);
 	
-	var _Overlay = __webpack_require__(/*! ../internal/Overlay */ 402);
+	var _Overlay = __webpack_require__(/*! ../internal/Overlay */ 397);
 	
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 	
-	var _RenderToLayer = __webpack_require__(/*! ../internal/RenderToLayer */ 404);
+	var _RenderToLayer = __webpack_require__(/*! ../internal/RenderToLayer */ 399);
 	
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 	
@@ -36309,7 +35641,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 401 */
+/* 396 */
 /*!*********************************************!*\
   !*** ./~/react-event-listener/lib/index.js ***!
   \*********************************************/
@@ -36479,7 +35811,7 @@
 	exports.default = EventListener;
 
 /***/ },
-/* 402 */
+/* 397 */
 /*!*******************************************!*\
   !*** ./~/material-ui/internal/Overlay.js ***!
   \*******************************************/
@@ -36507,7 +35839,7 @@
 	
 	var _transitions2 = _interopRequireDefault(_transitions);
 	
-	var _AutoLockScrolling = __webpack_require__(/*! ./AutoLockScrolling */ 403);
+	var _AutoLockScrolling = __webpack_require__(/*! ./AutoLockScrolling */ 398);
 	
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 	
@@ -36615,7 +35947,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 403 */
+/* 398 */
 /*!*****************************************************!*\
   !*** ./~/material-ui/internal/AutoLockScrolling.js ***!
   \*****************************************************/
@@ -36725,7 +36057,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 404 */
+/* 399 */
 /*!*************************************************!*\
   !*** ./~/material-ui/internal/RenderToLayer.js ***!
   \*************************************************/
@@ -36901,6 +36233,676 @@
 	exports.default = RenderToLayer;
 
 /***/ },
+/* 400 */
+/*!*******************************************!*\
+  !*** ./~/material-ui/FlatButton/index.js ***!
+  \*******************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+	
+	var _FlatButton = __webpack_require__(/*! ./FlatButton */ 401);
+	
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _FlatButton2.default;
+
+/***/ },
+/* 401 */
+/*!************************************************!*\
+  !*** ./~/material-ui/FlatButton/FlatButton.js ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _simpleAssign = __webpack_require__(/*! simple-assign */ 345);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _transitions = __webpack_require__(/*! ../styles/transitions */ 349);
+	
+	var _transitions2 = _interopRequireDefault(_transitions);
+	
+	var _childUtils = __webpack_require__(/*! ../utils/childUtils */ 368);
+	
+	var _colorManipulator = __webpack_require__(/*! ../utils/colorManipulator */ 300);
+	
+	var _EnhancedButton = __webpack_require__(/*! ../internal/EnhancedButton */ 367);
+	
+	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
+	
+	var _FlatButtonLabel = __webpack_require__(/*! ./FlatButtonLabel */ 402);
+	
+	var _FlatButtonLabel2 = _interopRequireDefault(_FlatButtonLabel);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function validateLabel(props, propName, componentName) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
+	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
+	    }
+	  }
+	}
+	
+	var FlatButton = function (_Component) {
+	  _inherits(FlatButton, _Component);
+	
+	  function FlatButton() {
+	    var _Object$getPrototypeO;
+	
+	    var _temp, _this, _ret;
+	
+	    _classCallCheck(this, FlatButton);
+	
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(FlatButton)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	      hovered: false,
+	      isKeyboardFocused: false,
+	      touch: false
+	    }, _this.handleKeyboardFocus = function (event, isKeyboardFocused) {
+	      _this.setState({ isKeyboardFocused: isKeyboardFocused });
+	      _this.props.onKeyboardFocus(event, isKeyboardFocused);
+	    }, _this.handleMouseEnter = function (event) {
+	      // Cancel hover styles for touch devices
+	      if (!_this.state.touch) _this.setState({ hovered: true });
+	      _this.props.onMouseEnter(event);
+	    }, _this.handleMouseLeave = function (event) {
+	      _this.setState({ hovered: false });
+	      _this.props.onMouseLeave(event);
+	    }, _this.handleTouchStart = function (event) {
+	      _this.setState({ touch: true });
+	      _this.props.onTouchStart(event);
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+	
+	  _createClass(FlatButton, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (nextProps.disabled && this.state.hovered) {
+	        this.setState({
+	          hovered: false
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var children = _props.children;
+	      var disabled = _props.disabled;
+	      var hoverColor = _props.hoverColor;
+	      var backgroundColor = _props.backgroundColor;
+	      var icon = _props.icon;
+	      var label = _props.label;
+	      var labelStyle = _props.labelStyle;
+	      var labelPosition = _props.labelPosition;
+	      var primary = _props.primary;
+	      var rippleColor = _props.rippleColor;
+	      var secondary = _props.secondary;
+	      var style = _props.style;
+	
+	      var other = _objectWithoutProperties(_props, ['children', 'disabled', 'hoverColor', 'backgroundColor', 'icon', 'label', 'labelStyle', 'labelPosition', 'primary', 'rippleColor', 'secondary', 'style']);
+	
+	      var _context$muiTheme = this.context.muiTheme;
+	      var _context$muiTheme$but = _context$muiTheme.button;
+	      var buttonHeight = _context$muiTheme$but.height;
+	      var buttonMinWidth = _context$muiTheme$but.minWidth;
+	      var buttonTextTransform = _context$muiTheme$but.textTransform;
+	      var _context$muiTheme$fla = _context$muiTheme.flatButton;
+	      var buttonFilterColor = _context$muiTheme$fla.buttonFilterColor;
+	      var buttonColor = _context$muiTheme$fla.color;
+	      var disabledTextColor = _context$muiTheme$fla.disabledTextColor;
+	      var fontSize = _context$muiTheme$fla.fontSize;
+	      var fontWeight = _context$muiTheme$fla.fontWeight;
+	      var primaryTextColor = _context$muiTheme$fla.primaryTextColor;
+	      var secondaryTextColor = _context$muiTheme$fla.secondaryTextColor;
+	      var textColor = _context$muiTheme$fla.textColor;
+	      var _context$muiTheme$fla2 = _context$muiTheme$fla.textTransform;
+	      var textTransform = _context$muiTheme$fla2 === undefined ? buttonTextTransform || 'uppercase' : _context$muiTheme$fla2;
+	
+	      var defaultTextColor = disabled ? disabledTextColor : primary ? primaryTextColor : secondary ? secondaryTextColor : textColor;
+	
+	      var defaultHoverColor = (0, _colorManipulator.fade)(buttonFilterColor, 0.2);
+	      var defaultRippleColor = buttonFilterColor;
+	      var buttonHoverColor = hoverColor || defaultHoverColor;
+	      var buttonRippleColor = rippleColor || defaultRippleColor;
+	      var buttonBackgroundColor = backgroundColor || buttonColor;
+	      var hovered = (this.state.hovered || this.state.isKeyboardFocused) && !disabled;
+	
+	      var mergedRootStyles = (0, _simpleAssign2.default)({}, {
+	        height: buttonHeight,
+	        lineHeight: buttonHeight + 'px',
+	        minWidth: buttonMinWidth,
+	        color: defaultTextColor,
+	        transition: _transitions2.default.easeOut(),
+	        borderRadius: 2,
+	        userSelect: 'none',
+	        position: 'relative',
+	        overflow: 'hidden',
+	        backgroundColor: hovered ? buttonHoverColor : buttonBackgroundColor,
+	        padding: 0,
+	        margin: 0,
+	        textAlign: 'center'
+	      }, style);
+	
+	      var iconCloned = void 0;
+	      var labelStyleIcon = {};
+	
+	      if (icon) {
+	        var iconStyles = (0, _simpleAssign2.default)({
+	          verticalAlign: 'middle',
+	          marginLeft: label && labelPosition !== 'before' ? 12 : 0,
+	          marginRight: label && labelPosition === 'before' ? 12 : 0
+	        }, icon.props.style);
+	        iconCloned = _react2.default.cloneElement(icon, {
+	          color: icon.props.color || mergedRootStyles.color,
+	          style: iconStyles
+	        });
+	
+	        if (labelPosition === 'before') {
+	          labelStyleIcon.paddingRight = 8;
+	        } else {
+	          labelStyleIcon.paddingLeft = 8;
+	        }
+	      }
+	
+	      var mergedLabelStyles = (0, _simpleAssign2.default)({
+	        letterSpacing: 0,
+	        textTransform: textTransform,
+	        fontWeight: fontWeight,
+	        fontSize: fontSize
+	      }, labelStyleIcon, labelStyle);
+	
+	      var labelElement = label ? _react2.default.createElement(_FlatButtonLabel2.default, { label: label, style: mergedLabelStyles }) : undefined;
+	
+	      // Place label before or after children.
+	      var childrenFragment = labelPosition === 'before' ? {
+	        labelElement: labelElement,
+	        iconCloned: iconCloned,
+	        children: children
+	      } : {
+	        children: children,
+	        iconCloned: iconCloned,
+	        labelElement: labelElement
+	      };
+	
+	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
+	
+	      return _react2.default.createElement(
+	        _EnhancedButton2.default,
+	        _extends({}, other, {
+	          disabled: disabled,
+	          focusRippleColor: buttonRippleColor,
+	          focusRippleOpacity: 0.3,
+	          onKeyboardFocus: this.handleKeyboardFocus,
+	          onMouseLeave: this.handleMouseLeave,
+	          onMouseEnter: this.handleMouseEnter,
+	          onTouchStart: this.handleTouchStart,
+	          style: mergedRootStyles,
+	          touchRippleColor: buttonRippleColor,
+	          touchRippleOpacity: 0.3
+	        }),
+	        enhancedButtonChildren
+	      );
+	    }
+	  }]);
+	
+	  return FlatButton;
+	}(_react.Component);
+	
+	FlatButton.muiName = 'FlatButton';
+	FlatButton.propTypes = {
+	  /**
+	   * Color of button when mouse is not hovering over it.
+	   */
+	  backgroundColor: _react.PropTypes.string,
+	  /**
+	   * This is what will be displayed inside the button.
+	   * If a label is specified, the text within the label prop will
+	   * be displayed. Otherwise, the component will expect children
+	   * which will then be displayed. (In our example,
+	   * we are nesting an `<input type="file" />` and a `span`
+	   * that acts as our label to be displayed.) This only
+	   * applies to flat and raised buttons.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * Disables the button if set to true.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	   * Color of button when mouse hovers over.
+	   */
+	  hoverColor: _react.PropTypes.string,
+	  /**
+	   * The URL to link to when the button is clicked.
+	   */
+	  href: _react.PropTypes.string,
+	  /**
+	   * Use this property to display an icon.
+	   */
+	  icon: _react.PropTypes.node,
+	  /**
+	   * Label for the button.
+	   */
+	  label: validateLabel,
+	  /**
+	   * Place label before or after the passed children.
+	   */
+	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
+	  /**
+	   * Override the inline-styles of the button's label element.
+	   */
+	  labelStyle: _react.PropTypes.object,
+	  /**
+	   * Callback function fired when the element is focused or blurred by the keyboard.
+	   *
+	   * @param {object} event `focus` or `blur` event targeting the element.
+	   * @param {boolean} isKeyboardFocused Indicates whether the element is focused.
+	   */
+	  onKeyboardFocus: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchStart: _react.PropTypes.func,
+	  /**
+	   * If true, colors button according to
+	   * primaryTextColor from the Theme.
+	   */
+	  primary: _react.PropTypes.bool,
+	  /**
+	   * Color for the ripple after button is clicked.
+	   */
+	  rippleColor: _react.PropTypes.string,
+	  /**
+	   * If true, colors button according to secondaryTextColor from the theme.
+	   * The primary prop has precendent if set to true.
+	   */
+	  secondary: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	};
+	FlatButton.defaultProps = {
+	  disabled: false,
+	  labelStyle: {},
+	  labelPosition: 'after',
+	  onKeyboardFocus: function onKeyboardFocus() {},
+	  onMouseEnter: function onMouseEnter() {},
+	  onMouseLeave: function onMouseLeave() {},
+	  onTouchStart: function onTouchStart() {},
+	  primary: false,
+	  secondary: false
+	};
+	FlatButton.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	exports.default = FlatButton;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 3)))
+
+/***/ },
+/* 402 */
+/*!*****************************************************!*\
+  !*** ./~/material-ui/FlatButton/FlatButtonLabel.js ***!
+  \*****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _simpleAssign = __webpack_require__(/*! simple-assign */ 345);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function getStyles(props, context) {
+	  var baseTheme = context.muiTheme.baseTheme;
+	
+	
+	  return {
+	    root: {
+	      position: 'relative',
+	      paddingLeft: baseTheme.spacing.desktopGutterLess,
+	      paddingRight: baseTheme.spacing.desktopGutterLess,
+	      verticalAlign: 'middle'
+	    }
+	  };
+	}
+	
+	var FlatButtonLabel = function (_Component) {
+	  _inherits(FlatButtonLabel, _Component);
+	
+	  function FlatButtonLabel() {
+	    _classCallCheck(this, FlatButtonLabel);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(FlatButtonLabel).apply(this, arguments));
+	  }
+	
+	  _createClass(FlatButtonLabel, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var label = _props.label;
+	      var style = _props.style;
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+	
+	      var styles = getStyles(this.props, this.context);
+	
+	      return _react2.default.createElement(
+	        'span',
+	        { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) },
+	        label
+	      );
+	    }
+	  }]);
+	
+	  return FlatButtonLabel;
+	}(_react.Component);
+	
+	FlatButtonLabel.propTypes = {
+	  label: _react.PropTypes.node,
+	  style: _react.PropTypes.object
+	};
+	FlatButtonLabel.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	exports.default = FlatButtonLabel;
+
+/***/ },
+/* 403 */
+/*!***********************************************!*\
+  !*** ./~/material-ui/LinearProgress/index.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+	
+	var _LinearProgress = __webpack_require__(/*! ./LinearProgress */ 404);
+	
+	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _LinearProgress2.default;
+
+/***/ },
+/* 404 */
+/*!********************************************************!*\
+  !*** ./~/material-ui/LinearProgress/LinearProgress.js ***!
+  \********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _simpleAssign = __webpack_require__(/*! simple-assign */ 345);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _transitions = __webpack_require__(/*! ../styles/transitions */ 349);
+	
+	var _transitions2 = _interopRequireDefault(_transitions);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function getRelativeValue(value, min, max) {
+	  var clampedValue = Math.min(Math.max(min, value), max);
+	  var rangeValue = max - min;
+	  var relValue = Math.round((clampedValue - min) / rangeValue * 10000) / 10000;
+	  return relValue * 100;
+	}
+	
+	function getStyles(props, context) {
+	  var max = props.max;
+	  var min = props.min;
+	  var value = props.value;
+	  var palette = context.muiTheme.baseTheme.palette;
+	
+	
+	  var styles = {
+	    root: {
+	      position: 'relative',
+	      height: 4,
+	      display: 'block',
+	      width: '100%',
+	      backgroundColor: palette.primary3Color,
+	      borderRadius: 2,
+	      margin: 0,
+	      overflow: 'hidden'
+	    },
+	    bar: {
+	      height: '100%'
+	    },
+	    barFragment1: {},
+	    barFragment2: {}
+	  };
+	
+	  if (props.mode === 'indeterminate') {
+	    styles.barFragment1 = {
+	      position: 'absolute',
+	      backgroundColor: props.color || palette.primary1Color,
+	      top: 0,
+	      left: 0,
+	      bottom: 0,
+	      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.650, 0.815, 0.735, 0.395)')
+	    };
+	
+	    styles.barFragment2 = {
+	      position: 'absolute',
+	      backgroundColor: props.color || palette.primary1Color,
+	      top: 0,
+	      left: 0,
+	      bottom: 0,
+	      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)')
+	    };
+	  } else {
+	    styles.bar.backgroundColor = props.color || palette.primary1Color;
+	    styles.bar.transition = _transitions2.default.create('width', '.3s', null, 'linear');
+	    styles.bar.width = getRelativeValue(value, min, max) + '%';
+	  }
+	
+	  return styles;
+	}
+	
+	var LinearProgress = function (_Component) {
+	  _inherits(LinearProgress, _Component);
+	
+	  function LinearProgress() {
+	    _classCallCheck(this, LinearProgress);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(LinearProgress).apply(this, arguments));
+	  }
+	
+	  _createClass(LinearProgress, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+	
+	      this.timers = {};
+	
+	      this.timers.bar1 = this.barUpdate('bar1', 0, this.refs.bar1, [[-35, 100], [100, -90]]);
+	
+	      this.timers.bar2 = setTimeout(function () {
+	        _this2.barUpdate('bar2', 0, _this2.refs.bar2, [[-200, 100], [107, -8]]);
+	      }, 850);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearTimeout(this.timers.bar1);
+	      clearTimeout(this.timers.bar2);
+	    }
+	  }, {
+	    key: 'barUpdate',
+	    value: function barUpdate(id, step, barElement, stepValues) {
+	      var _this3 = this;
+	
+	      if (this.props.mode !== 'indeterminate') return;
+	
+	      step = step || 0;
+	      step %= 4;
+	
+	      var right = this.context.muiTheme.isRtl ? 'left' : 'right';
+	      var left = this.context.muiTheme.isRtl ? 'right' : 'left';
+	
+	      if (step === 0) {
+	        barElement.style[left] = stepValues[0][0] + '%';
+	        barElement.style[right] = stepValues[0][1] + '%';
+	      } else if (step === 1) {
+	        barElement.style.transitionDuration = '840ms';
+	      } else if (step === 2) {
+	        barElement.style[left] = stepValues[1][0] + '%';
+	        barElement.style[right] = stepValues[1][1] + '%';
+	      } else if (step === 3) {
+	        barElement.style.transitionDuration = '0ms';
+	      }
+	      this.timers[id] = setTimeout(function () {
+	        return _this3.barUpdate(id, step + 1, barElement, stepValues);
+	      }, 420);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var style = _props.style;
+	
+	      var other = _objectWithoutProperties(_props, ['style']);
+	
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+	
+	      var styles = getStyles(this.props, this.context);
+	
+	      return _react2.default.createElement(
+	        'div',
+	        _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	        _react2.default.createElement(
+	          'div',
+	          { style: prepareStyles(styles.bar) },
+	          _react2.default.createElement('div', { ref: 'bar1', style: prepareStyles(styles.barFragment1) }),
+	          _react2.default.createElement('div', { ref: 'bar2', style: prepareStyles(styles.barFragment2) })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return LinearProgress;
+	}(_react.Component);
+	
+	LinearProgress.propTypes = {
+	  /**
+	   * The mode of show your progress, indeterminate for
+	   * when there is no value for progress.
+	   */
+	  color: _react.PropTypes.string,
+	  /**
+	   * The max value of progress, only works in determinate mode.
+	   */
+	  max: _react.PropTypes.number,
+	  /**
+	   * The min value of progress, only works in determinate mode.
+	   */
+	  min: _react.PropTypes.number,
+	  /**
+	   * The mode of show your progress, indeterminate for when
+	   * there is no value for progress.
+	   */
+	  mode: _react.PropTypes.oneOf(['determinate', 'indeterminate']),
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * The value of progress, only works in determinate mode.
+	   */
+	  value: _react.PropTypes.number
+	};
+	LinearProgress.defaultProps = {
+	  mode: 'indeterminate',
+	  value: 0,
+	  min: 0,
+	  max: 100
+	};
+	LinearProgress.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	exports.default = LinearProgress;
+
+/***/ },
 /* 405 */
 /*!**************************!*\
   !*** ./src/lib/index.ts ***!
@@ -36913,6 +36915,7 @@
 	const EulerProblem3_1 = __webpack_require__(/*! ./EulerProblem3 */ 409);
 	const EulerProblem4_1 = __webpack_require__(/*! ./EulerProblem4 */ 410);
 	const EulerProblem5_1 = __webpack_require__(/*! ./EulerProblem5 */ 411);
+	const EulerProblem6_1 = __webpack_require__(/*! ./EulerProblem6 */ 412);
 	function getProblems() {
 	    return [
 	        new EulerProblem1_1.default(),
@@ -36920,6 +36923,7 @@
 	        new EulerProblem3_1.default(),
 	        new EulerProblem4_1.default(),
 	        new EulerProblem5_1.default(),
+	        new EulerProblem6_1.default(),
 	    ];
 	}
 	exports.getProblems = getProblems;
@@ -36939,23 +36943,24 @@
 	        super(...args);
 	        this.problemNumber = 1;
 	        this.question = `
-	If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
+	If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these
+	multiples is 23.
 	
 	Find the sum of all the multiples of 3 or 5 below 1000.`;
-	    }
-	    // Check if a number is a multiple of 3 or 5 using mod operator
-	    isMultipleOf3or5(n) {
-	        return n % 3 === 0 || n % 5 === 0;
-	    }
-	    // Iterate up from 0 to 999 with a running sum if divisible by 3 or 5
-	    answer() {
-	        let sum = 0;
-	        for (let n = 0; n < 1000; n++) {
-	            if (this.isMultipleOf3or5(n)) {
-	                sum += n;
+	        // Iterate up from 0 to 999 with a running sum if divisible by 3 or 5
+	        this.answer = () => {
+	            // Check if a number is a multiple of 3 or 5 using mod operator
+	            const isMultipleOf3or5 = (n) => {
+	                return n % 3 === 0 || n % 5 === 0;
+	            };
+	            let sum = 0;
+	            for (let n = 0; n < 1000; n++) {
+	                if (isMultipleOf3or5(n)) {
+	                    sum += n;
+	                }
 	            }
-	        }
-	        return sum.toString();
+	            return sum.toString();
+	        };
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -36976,6 +36981,9 @@
 	        this.question = "";
 	        this.time = "-1";
 	        this.timeLabel = `Project Euler Problem ${this.problemNumber}`;
+	        this.answer = () => {
+	            return "Unanswered";
+	        };
 	    }
 	    printExecutionTime() {
 	        console.time(this.timeLabel);
@@ -37009,42 +37017,46 @@
 	        super(...args);
 	        this.problemNumber = 2;
 	        this.question = `
-	Each new term in the Fibonacci sequence is generated by adding the previous two terms. By starting with 1 and 2, the first 10 terms will be:
+	Each new term in the Fibonacci sequence is generated by adding the previous two terms. By starting with 1 and 2, the
+	first 10 terms will be:
 	
 	1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
 	
-	By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.`;
-	        this.memory = [];
-	    }
-	    // Find the nth Fibonacci number
-	    fib(n) {
-	        // No negative nth Fibonacci number
-	        if (n <= 2) {
-	            this.memory[n] = n;
-	        }
-	        // Memoize
-	        if (typeof this.memory[n] === "undefined") {
-	            this.memory[n] = this.fib(n - 1) + this.fib(n - 2);
-	        }
-	        return this.memory[n];
-	    }
-	    // Check to see if the first 10 Fibonacci numbers match what"s defined in the question
-	    fibTest() {
-	        let matches = false;
-	        const fibs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => this.fib(n));
-	        // As defined by question
-	        return fibs.toString() === [1, 2, 3, 5, 8, 13, 21, 34, 55, 89].toString();
-	    }
-	    // Iterate up from fib(n)<=4000000 and calculate running sum if fib(n) is even
-	    answer() {
-	        let runningSum = 0;
-	        for (let n = 0; this.fib(n) <= 4000000; n++) {
-	            // If even; add
-	            if (this.fib(n) % 2 === 0) {
-	                runningSum = runningSum + this.fib(n);
+	By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the
+	even-valued terms.`;
+	        // Check to see if the first 10 Fibonacci numbers match what"s defined in the question
+	        // public fibTest(): boolean {
+	        //     const fibs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => this.fib(n));
+	        //
+	        //     // As defined by question
+	        //     return fibs.toString() === [1, 2, 3, 5, 8, 13, 21, 34, 55, 89].toString();
+	        // }
+	        // Iterate up from fib(n)<=4000000 and calculate running sum if fib(n) is even
+	        this.answer = () => {
+	            const memory = [];
+	            let runningSum = 0;
+	            // Find the nth Fibonacci number
+	            const fib = (n) => {
+	                return (function foo(bar) {
+	                    // No negative nth Fibonacci number
+	                    if (bar <= 2) {
+	                        memory[bar] = bar;
+	                    }
+	                    // Memoize
+	                    if (typeof memory[bar] === "undefined") {
+	                        memory[bar] = foo(bar - 1) + foo(bar - 2);
+	                    }
+	                    return memory[bar];
+	                })(n);
+	            };
+	            for (let n = 0; fib(n) <= 4000000; n++) {
+	                // If even; add
+	                if (fib(n) % 2 === 0) {
+	                    runningSum = runningSum + fib(n);
+	                }
 	            }
-	        }
-	        return runningSum.toString();
+	            return runningSum.toString();
+	        };
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -37068,41 +37080,41 @@
 	The prime factors of 13195 are 5, 7, 13 and 29.
 	
 	What is the largest prime factor of the number 600851475143 ?`;
-	    }
-	    /**
-	     * Find primeness of a number
-	     * @link https://en.wikipedia.org/wiki/Prime_number#Trial_division
-	     */
-	    isPrime(n) {
-	        let start = 2;
-	        while (start <= Math.sqrt(n)) {
-	            if (n % start++ < 1) {
-	                return false;
-	            }
-	        }
-	        return n > 1;
-	    }
-	    /**
-	     * Perform prime decomposition
-	     * @link https://en.wikipedia.org/wiki/Prime_factor
-	     * @link https://en.wikipedia.org/wiki/Integer_factorization
-	     */
-	    primeFactors(n) {
-	        let factors = [];
-	        // start by dividing by 2
-	        let denominator = 2;
-	        while (n > 1) {
-	            while (n % denominator === 0) {
-	                factors.push(denominator);
-	                n /= denominator;
-	            }
-	            denominator += 1;
-	        }
-	        return factors;
-	    }
-	    answer() {
-	        let primeFactors = this.primeFactors(600851475143);
-	        return primeFactors[primeFactors.length - 1].toString();
+	        this.answer = () => {
+	            /**
+	             * Find primeness of a number
+	             * @link https://en.wikipedia.org/wiki/Prime_number#Trial_division
+	             */
+	            const isPrime = (n) => {
+	                let start = 2;
+	                while (start <= Math.sqrt(n)) {
+	                    if (n % start++ < 1) {
+	                        return false;
+	                    }
+	                }
+	                return n > 1;
+	            };
+	            /**
+	             * Perform prime decomposition
+	             * @link https://en.wikipedia.org/wiki/Prime_factor
+	             * @link https://en.wikipedia.org/wiki/Integer_factorization
+	             */
+	            const primeFactors = (n) => {
+	                let factors = [];
+	                // start by dividing by 2
+	                let denominator = 2;
+	                while (n > 1) {
+	                    while (n % denominator === 0) {
+	                        factors.push(denominator);
+	                        n /= denominator;
+	                    }
+	                    denominator += 1;
+	                }
+	                return factors;
+	            };
+	            const factors = primeFactors(600851475143);
+	            return factors[factors.length - 1].toString();
+	        };
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -37123,29 +37135,30 @@
 	        super(...args);
 	        this.problemNumber = 4;
 	        this.question = `
-	A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+	A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is
+	9009 = 91 × 99.
 	
 	Find the largest palindrome made from the product of two 3-digit numbers.`;
-	    }
-	    isPalindromic(n) {
-	        const asString = n.toString();
-	        return asString === asString.split("").reverse().join("");
-	    }
-	    /**
-	     * Iterate over a 2 levels of nested for loop checking the product of their variable
-	     * @complexity O(n^2)
-	     */
-	    answer() {
-	        let largestPalendrome = 0;
-	        for (let x = 100; x < 1000; x++) {
-	            for (let y = 100; y < 1000; y++) {
-	                const product = x * y;
-	                if (this.isPalindromic(product)) {
-	                    largestPalendrome = product;
+	        /**
+	         * Iterate over a 2 levels of nested for loop checking the product of their variable
+	         * @complexity O(n^2)
+	         */
+	        this.answer = () => {
+	            const isPalindromic = (n) => {
+	                const asString = n.toString();
+	                return asString === asString.split("").reverse().join("");
+	            };
+	            let largestPalendrome = 0;
+	            for (let x = 100; x < 1000; x++) {
+	                for (let y = 100; y < 1000; y++) {
+	                    const product = x * y;
+	                    if (isPalindromic(product)) {
+	                        largestPalendrome = product;
+	                    }
 	                }
 	            }
-	        }
-	        return largestPalendrome.toString();
+	            return largestPalendrome.toString();
+	        };
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -37169,31 +37182,83 @@
 	2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
 	
 	What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?`;
-	    }
-	    isDivisible(n, from, to) {
-	        let isDivisible = true;
-	        for (let x = from; x <= to; x++) {
-	            if (n % x !== 0) {
-	                isDivisible = false;
+	        this.answer = () => {
+	            const isDivisible = (n, from, to) => {
+	                let divisible = true;
+	                for (let x = from; x <= to; x++) {
+	                    if (n % x !== 0) {
+	                        divisible = false;
+	                    }
+	                }
+	                return divisible;
+	            };
+	            let smallestPositive = 0;
+	            let currentNumber = 0;
+	            while (smallestPositive === 0) {
+	                if (currentNumber % 10000 == 0) {
+	                    eval(`postMessage(${currentNumber})`);
+	                }
+	                currentNumber++;
+	                if (isDivisible(currentNumber, 1, 20)) {
+	                    smallestPositive = currentNumber;
+	                }
 	            }
-	        }
-	        return isDivisible;
-	    }
-	    answer() {
-	        let smallestPositive = 0;
-	        let found = false;
-	        let currentNumber = 0;
-	        while (smallestPositive === 0) {
-	            currentNumber++;
-	            if (this.isDivisible(currentNumber, 1, 20)) {
-	                smallestPositive = currentNumber;
-	            }
-	        }
-	        return smallestPositive.toString();
+	            return smallestPositive.toString();
+	        };
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = EulerProblem5;
+
+
+/***/ },
+/* 412 */
+/*!**********************************!*\
+  !*** ./src/lib/EulerProblem6.ts ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	const EulerProblem_1 = __webpack_require__(/*! ./EulerProblem */ 407);
+	class EulerProblem6 extends EulerProblem_1.AbstractEulerProblem {
+	    constructor(...args) {
+	        super(...args);
+	        this.problemNumber = 6;
+	        this.question = `
+	The sum of the squares of the first ten natural numbers is,
+	
+	1^2 + 2^2 + ... + 10^2 = 385
+	The square of the sum of the first ten natural numbers is,
+	
+	(1 + 2 + ... + 10)^2 = 55^2 = 3025
+	
+	Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is
+	3025 − 385 = 2640.
+	
+	Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.`;
+	    }
+	    sumOfSquares(n) {
+	        let sum = 0;
+	        for (let x = 0; x <= n; x++) {
+	            sum = sum + (x * x);
+	        }
+	        return sum;
+	    }
+	    squareOfSum(n) {
+	        let sum = 0;
+	        for (let x = 0; x <= n; x++) {
+	            sum = sum + x;
+	        }
+	        return sum * sum;
+	    }
+	    answer() {
+	        const sumOfSquares = this.sumOfSquares(100);
+	        const squareOfSum = this.squareOfSum(100);
+	        return (squareOfSum - sumOfSquares).toString();
+	    }
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = EulerProblem6;
 
 
 /***/ }

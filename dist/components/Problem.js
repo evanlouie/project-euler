@@ -1,9 +1,9 @@
 "use strict";
-const React = require("react");
 const Card_1 = require("material-ui/Card");
+const Dialog_1 = require("material-ui/Dialog");
 const FlatButton_1 = require("material-ui/FlatButton");
 const LinearProgress_1 = require("material-ui/LinearProgress");
-const Dialog_1 = require("material-ui/Dialog");
+const React = require("react");
 class Problem extends React.Component {
     constructor(props) {
         super(props);
@@ -19,12 +19,19 @@ class Problem extends React.Component {
     }
     handleAnswer(event) {
         this.setState(Object.assign({}, this.state, {
-            isComputing: true
+            isComputing: true,
         }), () => {
-            this.setState(Object.assign({}, this.state, {
-                answer: this.props.question.benchmark(),
-                isComputing: false
-            }));
+            const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
+            const runnable = new Blob([response], { type: "text/javascript" });
+            const worker = new Worker(window.URL.createObjectURL(runnable));
+            worker.onmessage = (e) => {
+                console.log("Received: " + e.data);
+                this.setState(Object.assign({}, this.state, {
+                    answer: e.data,
+                    isComputing: false,
+                }));
+            };
+            worker.postMessage("WORK!!!");
         });
     }
     getSource() {
@@ -36,34 +43,34 @@ class Problem extends React.Component {
     handleSource(event) {
         this.getSource().then((codeString) => {
             this.setState(Object.assign({}, this.state, {
-                source: codeString
+                source: codeString,
             }));
         });
     }
     handleOpenSourceWindow(event) {
         this.setState(Object.assign({}, this.state, {
-            sourceWindowOpen: true
+            sourceWindowOpen: true,
         }), () => {
             this.handleSource(event);
         });
     }
     handleCloseSourceWindow() {
         this.setState(Object.assign({}, this.state, {
-            sourceWindowOpen: false
+            sourceWindowOpen: false,
         }));
     }
     render() {
         const title = `Problem ${this.props.question.problemNumber}`;
         const subtitle = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
         const actions = [
-            React.createElement(FlatButton_1.default, {label: "Cancel", primary: true, onTouchTap: (event) => this.handleCloseSourceWindow()})
+            React.createElement(FlatButton_1.default, {label: "Cancel", primary: true, onTouchTap: (event) => this.handleCloseSourceWindow()}),
         ];
         return (React.createElement("div", {className: "Problem"}, 
-            React.createElement("pre", null, JSON.stringify(this.state, null, 2)), 
+            React.createElement("pre", null), 
             React.createElement(Card_1.Card, null, 
                 React.createElement(Card_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
                 React.createElement(Card_1.CardText, {expandable: false}, 
-                    React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "")), 
+                    React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")), 
                     (this.state.isComputing && this.state.answer === "") ?
                         React.createElement(LinearProgress_1.default, {mode: "indeterminate"}) :
                         this.state.answer), 

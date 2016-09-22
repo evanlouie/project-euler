@@ -1,10 +1,10 @@
+import Problem from "./components/Problem";
+import { getProblems } from "./lib";
+import { IEulerProblem } from "./lib/EulerProblem";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Problem from "./components/Problem";
-import { IEulerProblem } from "./lib/EulerProblem";
-import { getProblems } from "./lib";
 
 injectTapEventPlugin();
 const problems: IEulerProblem[] = getProblems();
@@ -14,8 +14,8 @@ ReactDOM.render(
         <div
             className="ProjectEuler"
             style={{
+                margin: "0 auto",
                 maxWidth: "1000px",
-                margin: "0 auto"
             }}
             >
             {

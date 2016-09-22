@@ -5,6 +5,9 @@ class AbstractEulerProblem {
         this.question = "";
         this.time = "-1";
         this.timeLabel = `Project Euler Problem ${this.problemNumber}`;
+        this.answer = () => {
+            return "Unanswered";
+        };
     }
     printExecutionTime() {
         console.time(this.timeLabel);

@@ -1,10 +1,10 @@
 export interface IEulerProblem {
     problemNumber: number;
     question: string;
-    answer(): string;
-    timeLabel: string;
-    benchmark(): string;
     time: string;
+    timeLabel: string;
+    answer: () => string;
+    benchmark(): string;
     printExecutionTime(): void;
 }
 
@@ -12,10 +12,10 @@ export abstract class AbstractEulerProblem implements IEulerProblem {
     public problemNumber: number = 0;
     public question: string = "";
     public time: string = "-1";
-    public abstract answer(): string;
-
     public timeLabel: string = `Project Euler Problem ${this.problemNumber}`;
-
+    public answer = () => {
+        return "Unanswered";
+    };
     public printExecutionTime(): void {
         console.time(this.timeLabel);
         console.info(`Question ${this.problemNumber}: ${this.question}`);
@@ -23,7 +23,6 @@ export abstract class AbstractEulerProblem implements IEulerProblem {
         console.info(`Answer to problem ${this.problemNumber}: ${this.answer()}`);
         console.timeEnd(this.timeLabel);
     }
-
     public benchmark(): string {
         const start = performance.now();
         const answer = this.answer();
