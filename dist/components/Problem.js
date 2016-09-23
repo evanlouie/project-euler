@@ -18,6 +18,9 @@ class Problem extends React.Component {
         };
     }
     handleAnswer(event) {
+        if (this.state.worker !== null) {
+            this.state.worker.terminate();
+        }
         this.setState(Object.assign({}, this.state, {
             isComputing: true,
         }), () => {
@@ -29,6 +32,7 @@ class Problem extends React.Component {
                 this.setState(Object.assign({}, this.state, {
                     answer: e.data,
                     isComputing: false,
+                    worker,
                 }));
             };
             worker.postMessage("WORK!!!");
@@ -77,7 +81,7 @@ class Problem extends React.Component {
                 React.createElement(Card_1.CardActions, null, 
                     React.createElement(FlatButton_1.default, {label: "Source Code", onClick: (event) => this.handleOpenSourceWindow(event)}), 
                     React.createElement(FlatButton_1.default, {label: "Answer", onClick: (event) => this.handleAnswer(event)}))), 
-            React.createElement(Dialog_1.default, {title: "Scrollable Dialog", actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: (event) => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
+            React.createElement(Dialog_1.default, {title: this.props.question.constructor.name, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: (event) => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
                 React.createElement(LinearProgress_1.default, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
                 React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, 
                     React.createElement("code", null, this.state.source)

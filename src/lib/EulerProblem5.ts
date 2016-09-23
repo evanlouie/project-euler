@@ -24,9 +24,6 @@ What is the smallest positive number that is evenly divisible by all of the numb
         let currentNumber = 0;
 
         while (smallestPositive === 0) {
-            if (currentNumber % 10000 == 0) {
-                eval(`postMessage(${currentNumber})`);
-            }
             currentNumber++;
             if (isDivisible(currentNumber, 1, 20)) {
                 smallestPositive = currentNumber;

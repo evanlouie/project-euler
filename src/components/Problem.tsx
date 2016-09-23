@@ -36,6 +36,9 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
     }
 
     public handleAnswer(event: React.MouseEvent) {
+        if (this.state.worker !== null) {
+            this.state.worker.terminate();
+        }
         this.setState(Object.assign({}, this.state, {
             isComputing: true,
         }), () => {
@@ -47,10 +50,10 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
                 this.setState(Object.assign({}, this.state, {
                     answer: e.data,
                     isComputing: false,
+                    worker,
                 }));
             };
             worker.postMessage("WORK!!!"); // Start the worker.
-
         });
     }
 
@@ -136,7 +139,7 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
                     </CardActions>
                 </Card>
                 <Dialog
-                    title="Scrollable Dialog"
+                    title={this.props.question.constructor.name}
                     actions={actions}
                     modal={false}
                     open={this.state.sourceWindowOpen}

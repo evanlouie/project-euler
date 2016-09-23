@@ -3,6 +3,7 @@ export interface IEulerProblem {
     question: string;
     time: string;
     timeLabel: string;
+    // We define our answer as an anonymous function so it is worker/thread safe
     answer: () => string;
     benchmark(): string;
     printExecutionTime(): void;
