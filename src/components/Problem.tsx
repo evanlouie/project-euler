@@ -57,23 +57,10 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
         });
     }
 
-    public getSource(): Promise<String> {
-        const url = `/src/lib/EulerProblem${this.props.question.problemNumber}.ts`;
-        return fetch(url).then((response) => {
-            return response.text();
-        });
-        // return this.props.question.constructor.toString();
-    }
-
     public handleSource(event: React.MouseEvent) {
-        this.getSource().then((codeString) => {
-            this.setState(Object.assign({}, this.state, {
-                source: codeString,
-            }));
-        });
-        // this.setState(Object.assign({}, this.state, {
-        //     source: this.props.question.constructor.toString()
-        // }));
+        this.setState(Object.assign({}, this.state, {
+            source: this.props.question.constructor.toString(),
+        }));
     }
 
     public handleOpenSourceWindow(event: React.MouseEvent) {

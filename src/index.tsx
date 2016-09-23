@@ -15,13 +15,11 @@ ReactDOM.render(
             className="ProjectEuler"
             style={{
                 margin: "0 auto",
-                maxWidth: "1000px",
+                maxWidth: "750px",
             }}
             >
             {
-                problems.map((problem: IEulerProblem) => {
-                    return <Problem key={problem.problemNumber} question={problem} />;
-                })
+                problems.map((problem: IEulerProblem) => <Problem key={problem.problemNumber} question={problem} />)
             }
         </div>
     </MuiThemeProvider>,
