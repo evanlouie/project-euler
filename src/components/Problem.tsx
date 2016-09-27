@@ -1,7 +1,4 @@
-import { Card, CardActions, CardHeader, CardText } from "material-ui/Card";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import LinearProgress from "material-ui/LinearProgress";
+import { Card, CardActions, CardHeader, CardText, Dialog, FlatButton, LinearProgress } from "material-ui";
 import * as React from "react";
 
 import { AbstractEulerProblem } from "../lib/EulerProblem";
@@ -35,39 +32,45 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
         };
     }
 
-    public handleAnswer(event: React.MouseEvent) {
-        if (this.state.worker !== null) {
-            this.state.worker.terminate();
+    public handleAnswer() {
+        if (typeof Worker !== "undefined") {
+            if (this.state.worker !== null) {
+                this.state.worker.terminate();
+            }
+            this.setState(Object.assign({}, this.state, {
+                isComputing: true,
+            }), () => {
+                const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
+                const runnable = new Blob([response], { type: "text/javascript" });
+                const worker = new Worker(window.URL.createObjectURL(runnable));
+                worker.onmessage = (e) => {
+                    console.log("Received: " + e.data);
+                    this.setState(Object.assign({}, this.state, {
+                        answer: e.data,
+                        isComputing: false,
+                        worker,
+                    }));
+                };
+                worker.postMessage("WORK!!!"); // Start the worker.
+            });
+        } else {
+            console.exception(`${navigator.appVersion} lacks Web Worker support.`);
+            console.info("Web Workers are required to evaluated answers as computation will cause the main window thread to lock");
+            alert("Your browser doesn't seem to support Web Workers :-(");
         }
-        this.setState(Object.assign({}, this.state, {
-            isComputing: true,
-        }), () => {
-            const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
-            const runnable = new Blob([response], { type: "text/javascript" });
-            const worker = new Worker(window.URL.createObjectURL(runnable));
-            worker.onmessage = (e) => {
-                console.log("Received: " + e.data);
-                this.setState(Object.assign({}, this.state, {
-                    answer: e.data,
-                    isComputing: false,
-                    worker,
-                }));
-            };
-            worker.postMessage("WORK!!!"); // Start the worker.
-        });
     }
 
-    public handleSource(event: React.MouseEvent) {
+    public handleSource() {
         this.setState(Object.assign({}, this.state, {
             source: this.props.question.constructor.toString(),
         }));
     }
 
-    public handleOpenSourceWindow(event: React.MouseEvent) {
+    public handleOpenSourceWindow() {
         this.setState(Object.assign({}, this.state, {
             sourceWindowOpen: true,
         }), () => {
-            this.handleSource(event);
+            this.handleSource();
         });
     }
 
@@ -85,7 +88,7 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onTouchTap={(event) => this.handleCloseSourceWindow()}
+                onTouchTap={() => this.handleCloseSourceWindow()}
                 />,
         ];
 
@@ -119,10 +122,10 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
                     <CardActions>
                         <FlatButton
                             label="Source Code"
-                            onClick={(event) => this.handleOpenSourceWindow(event)} />
+                            onClick={() => this.handleOpenSourceWindow()} />
                         <FlatButton
                             label="Answer"
-                            onClick={(event) => this.handleAnswer(event)} />
+                            onClick={() => this.handleAnswer()} />
                     </CardActions>
                 </Card>
                 <Dialog
@@ -130,7 +133,7 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
                     actions={actions}
                     modal={false}
                     open={this.state.sourceWindowOpen}
-                    onRequestClose={(event) => this.handleCloseSourceWindow()}
+                    onRequestClose={() => this.handleCloseSourceWindow()}
                     autoScrollBodyContent={true}
                     >
                     {

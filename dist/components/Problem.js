@@ -1,8 +1,5 @@
 "use strict";
-const Card_1 = require("material-ui/Card");
-const Dialog_1 = require("material-ui/Dialog");
-const FlatButton_1 = require("material-ui/FlatButton");
-const LinearProgress_1 = require("material-ui/LinearProgress");
+const material_ui_1 = require("material-ui");
 const React = require("react");
 class Problem extends React.Component {
     constructor(props) {
@@ -17,45 +14,44 @@ class Problem extends React.Component {
             worker: null,
         };
     }
-    handleAnswer(event) {
-        if (this.state.worker !== null) {
-            this.state.worker.terminate();
-        }
-        this.setState(Object.assign({}, this.state, {
-            isComputing: true,
-        }), () => {
-            const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
-            const runnable = new Blob([response], { type: "text/javascript" });
-            const worker = new Worker(window.URL.createObjectURL(runnable));
-            worker.onmessage = (e) => {
-                console.log("Received: " + e.data);
-                this.setState(Object.assign({}, this.state, {
-                    answer: e.data,
-                    isComputing: false,
-                    worker,
-                }));
-            };
-            worker.postMessage("WORK!!!");
-        });
-    }
-    getSource() {
-        const url = `/src/lib/EulerProblem${this.props.question.problemNumber}.ts`;
-        return fetch(url).then((response) => {
-            return response.text();
-        });
-    }
-    handleSource(event) {
-        this.getSource().then((codeString) => {
+    handleAnswer() {
+        if (typeof Worker !== "undefined") {
+            if (this.state.worker !== null) {
+                this.state.worker.terminate();
+            }
             this.setState(Object.assign({}, this.state, {
-                source: codeString,
-            }));
-        });
+                isComputing: true,
+            }), () => {
+                const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
+                const runnable = new Blob([response], { type: "text/javascript" });
+                const worker = new Worker(window.URL.createObjectURL(runnable));
+                worker.onmessage = (e) => {
+                    console.log("Received: " + e.data);
+                    this.setState(Object.assign({}, this.state, {
+                        answer: e.data,
+                        isComputing: false,
+                        worker,
+                    }));
+                };
+                worker.postMessage("WORK!!!");
+            });
+        }
+        else {
+            console.exception(`${navigator.appVersion} lacks Web Worker support.`);
+            console.info("Web Workers are required to evaluated answers as computation will cause the main window thread to lock");
+            alert("Your browser doesn't seem to support Web Workers :-(");
+        }
     }
-    handleOpenSourceWindow(event) {
+    handleSource() {
+        this.setState(Object.assign({}, this.state, {
+            source: this.props.question.constructor.toString(),
+        }));
+    }
+    handleOpenSourceWindow() {
         this.setState(Object.assign({}, this.state, {
             sourceWindowOpen: true,
         }), () => {
-            this.handleSource(event);
+            this.handleSource();
         });
     }
     handleCloseSourceWindow() {
@@ -67,22 +63,22 @@ class Problem extends React.Component {
         const title = `Problem ${this.props.question.problemNumber}`;
         const subtitle = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
         const actions = [
-            React.createElement(FlatButton_1.default, {label: "Cancel", primary: true, onTouchTap: (event) => this.handleCloseSourceWindow()}),
+            React.createElement(material_ui_1.FlatButton, {label: "Cancel", primary: true, onTouchTap: () => this.handleCloseSourceWindow()}),
         ];
         return (React.createElement("div", {className: "Problem"}, 
             React.createElement("pre", null), 
-            React.createElement(Card_1.Card, null, 
-                React.createElement(Card_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
-                React.createElement(Card_1.CardText, {expandable: false}, 
+            React.createElement(material_ui_1.Card, null, 
+                React.createElement(material_ui_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
+                React.createElement(material_ui_1.CardText, {expandable: false}, 
                     React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")), 
                     (this.state.isComputing && this.state.answer === "") ?
-                        React.createElement(LinearProgress_1.default, {mode: "indeterminate"}) :
+                        React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate"}) :
                         this.state.answer), 
-                React.createElement(Card_1.CardActions, null, 
-                    React.createElement(FlatButton_1.default, {label: "Source Code", onClick: (event) => this.handleOpenSourceWindow(event)}), 
-                    React.createElement(FlatButton_1.default, {label: "Answer", onClick: (event) => this.handleAnswer(event)}))), 
-            React.createElement(Dialog_1.default, {title: this.props.question.constructor.name, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: (event) => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
-                React.createElement(LinearProgress_1.default, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
+                React.createElement(material_ui_1.CardActions, null, 
+                    React.createElement(material_ui_1.FlatButton, {label: "Source Code", onClick: () => this.handleOpenSourceWindow()}), 
+                    React.createElement(material_ui_1.FlatButton, {label: "Answer", onClick: () => this.handleAnswer()}))), 
+            React.createElement(material_ui_1.Dialog, {title: this.props.question.constructor.name, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
+                React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
                 React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, 
                     React.createElement("code", null, this.state.source)
                 ))));

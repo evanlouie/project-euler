@@ -10,8 +10,6 @@ const problems = lib_1.getProblems();
 ReactDOM.render(React.createElement(MuiThemeProvider_1.default, null, 
     React.createElement("div", {className: "ProjectEuler", style: {
         margin: "0 auto",
-        maxWidth: "1000px",
-    }}, problems.map((problem) => {
-        return React.createElement(Problem_1.default, {key: problem.problemNumber, question: problem});
-    }))
+        maxWidth: "750px",
+    }}, problems.map((problem) => React.createElement(Problem_1.default, {key: problem.problemNumber, question: problem})))
 ), document.querySelector("#app"));
