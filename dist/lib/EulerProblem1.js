@@ -1,5 +1,6 @@
-import { AbstractEulerProblem } from "./EulerProblem";
-export default class EulerProblem1 extends AbstractEulerProblem {
+"use strict";
+const EulerProblem_1 = require("./EulerProblem");
+class EulerProblem1 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
         super(...arguments);
         this.problemNumber = 1;
@@ -23,3 +24,5 @@ Find the sum of all the multiples of 3 or 5 below 1000.`;
         };
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = EulerProblem1;

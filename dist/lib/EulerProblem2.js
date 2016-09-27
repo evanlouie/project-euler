@@ -1,5 +1,6 @@
-import { AbstractEulerProblem } from "./EulerProblem";
-export default class EulerProblem2 extends AbstractEulerProblem {
+"use strict";
+const EulerProblem_1 = require("./EulerProblem");
+class EulerProblem2 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
         super(...arguments);
         this.problemNumber = 2;
@@ -44,3 +45,5 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
         };
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = EulerProblem2;

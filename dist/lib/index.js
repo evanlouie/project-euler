@@ -1,18 +1,20 @@
-import EulerProblem1 from "./EulerProblem1";
-import EulerProblem2 from "./EulerProblem2";
-import EulerProblem3 from "./EulerProblem3";
-import EulerProblem4 from "./EulerProblem4";
-import EulerProblem5 from "./EulerProblem5";
-import EulerProblem6 from "./EulerProblem6";
-import EulerProblem7 from "./EulerProblem7";
-export function getProblems() {
+"use strict";
+const EulerProblem1_1 = require("./EulerProblem1");
+const EulerProblem2_1 = require("./EulerProblem2");
+const EulerProblem3_1 = require("./EulerProblem3");
+const EulerProblem4_1 = require("./EulerProblem4");
+const EulerProblem5_1 = require("./EulerProblem5");
+const EulerProblem6_1 = require("./EulerProblem6");
+const EulerProblem7_1 = require("./EulerProblem7");
+function getProblems() {
     return [
-        new EulerProblem1(),
-        new EulerProblem2(),
-        new EulerProblem3(),
-        new EulerProblem4(),
-        new EulerProblem5(),
-        new EulerProblem6(),
-        new EulerProblem7(),
+        new EulerProblem1_1.default(),
+        new EulerProblem2_1.default(),
+        new EulerProblem3_1.default(),
+        new EulerProblem4_1.default(),
+        new EulerProblem5_1.default(),
+        new EulerProblem6_1.default(),
+        new EulerProblem7_1.default(),
     ];
 }
+exports.getProblems = getProblems;

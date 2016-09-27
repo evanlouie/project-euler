@@ -1,5 +1,6 @@
-import { AbstractEulerProblem } from "./EulerProblem";
-export default class EulerProblem3 extends AbstractEulerProblem {
+"use strict";
+const EulerProblem_1 = require("./EulerProblem");
+class EulerProblem3 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
         super(...arguments);
         this.problemNumber = 3;
@@ -31,3 +32,5 @@ What is the largest prime factor of the number 600851475143 ?`;
         };
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = EulerProblem3;

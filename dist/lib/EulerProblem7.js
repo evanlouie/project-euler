@@ -1,5 +1,6 @@
-import { AbstractEulerProblem } from "./EulerProblem";
-export default class EulerProblem7 extends AbstractEulerProblem {
+"use strict";
+const EulerProblem_1 = require("./EulerProblem");
+class EulerProblem7 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
         super(...arguments);
         this.problemNumber = 7;
@@ -33,3 +34,5 @@ What is the 10 001st prime number?`;
         };
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = EulerProblem7;

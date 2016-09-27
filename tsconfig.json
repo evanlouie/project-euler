@@ -4,8 +4,8 @@
         "emitDecoratorMetadata": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
-        // "module": "commonjs", // for node require()
-        "module": "es6",
+        "module": "commonjs", // for node require()
+        // "module": "es6",
         "moduleResolution": "node",
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true,
