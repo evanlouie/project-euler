@@ -1,7 +1,6 @@
-"use strict";
-const material_ui_1 = require("material-ui");
-const React = require("react");
-class Problem extends React.Component {
+import { Card, CardActions, CardHeader, CardText, Dialog, FlatButton, LinearProgress } from "material-ui";
+import * as React from "react";
+export default class Problem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -33,7 +32,7 @@ class Problem extends React.Component {
                         worker,
                     }));
                 };
-                worker.postMessage("WORK!!!");
+                worker.postMessage("WORK!!!"); // Start the worker.
             });
         }
         else {
@@ -63,26 +62,24 @@ class Problem extends React.Component {
         const title = `Problem ${this.props.question.problemNumber}`;
         const subtitle = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
         const actions = [
-            React.createElement(material_ui_1.FlatButton, {label: "Cancel", primary: true, onTouchTap: () => this.handleCloseSourceWindow()}),
+            React.createElement(FlatButton, {label: "Cancel", primary: true, onTouchTap: () => this.handleCloseSourceWindow()}),
         ];
         return (React.createElement("div", {className: "Problem"}, 
             React.createElement("pre", null), 
-            React.createElement(material_ui_1.Card, null, 
-                React.createElement(material_ui_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
-                React.createElement(material_ui_1.CardText, {expandable: false}, 
+            React.createElement(Card, null, 
+                React.createElement(CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
+                React.createElement(CardText, {expandable: false}, 
                     React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")), 
                     (this.state.isComputing && this.state.answer === "") ?
-                        React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate"}) :
+                        React.createElement(LinearProgress, {mode: "indeterminate"}) :
                         this.state.answer), 
-                React.createElement(material_ui_1.CardActions, null, 
-                    React.createElement(material_ui_1.FlatButton, {label: "Source Code", onClick: () => this.handleOpenSourceWindow()}), 
-                    React.createElement(material_ui_1.FlatButton, {label: "Answer", onClick: () => this.handleAnswer()}))), 
-            React.createElement(material_ui_1.Dialog, {title: this.props.question.constructor.name, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
-                React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
+                React.createElement(CardActions, null, 
+                    React.createElement(FlatButton, {label: "Source Code", onClick: () => this.handleOpenSourceWindow()}), 
+                    React.createElement(FlatButton, {label: "Answer", onClick: () => this.handleAnswer()}))), 
+            React.createElement(Dialog, {title: this.props.question.constructor.name, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
+                React.createElement(LinearProgress, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
                 React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, 
                     React.createElement("code", null, this.state.source)
                 ))));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = Problem;

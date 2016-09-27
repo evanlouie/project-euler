@@ -1,5 +1,4 @@
-"use strict";
-class AbstractEulerProblem {
+export class AbstractEulerProblem {
     constructor() {
         this.problemNumber = 0;
         this.question = "";
@@ -24,4 +23,3 @@ class AbstractEulerProblem {
         return answer;
     }
 }
-exports.AbstractEulerProblem = AbstractEulerProblem;

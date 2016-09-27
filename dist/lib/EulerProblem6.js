@@ -1,8 +1,7 @@
-"use strict";
-const EulerProblem_1 = require("./EulerProblem");
-class EulerProblem6 extends EulerProblem_1.AbstractEulerProblem {
-    constructor(...args) {
-        super(...args);
+import { AbstractEulerProblem } from "./EulerProblem";
+export default class EulerProblem6 extends AbstractEulerProblem {
+    constructor() {
+        super(...arguments);
         this.problemNumber = 6;
         this.question = `
 The sum of the squares of the first ten natural numbers is,
@@ -34,5 +33,3 @@ Find the difference between the sum of the squares of the first one hundred natu
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EulerProblem6;

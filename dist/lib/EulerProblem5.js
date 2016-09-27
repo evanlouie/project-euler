@@ -1,8 +1,7 @@
-"use strict";
-const EulerProblem_1 = require("./EulerProblem");
-class EulerProblem5 extends EulerProblem_1.AbstractEulerProblem {
-    constructor(...args) {
-        super(...args);
+import { AbstractEulerProblem } from "./EulerProblem";
+export default class EulerProblem5 extends AbstractEulerProblem {
+    constructor() {
+        super(...arguments);
         this.problemNumber = 5;
         this.question = `
 2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
@@ -30,5 +29,3 @@ What is the smallest positive number that is evenly divisible by all of the numb
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = EulerProblem5;

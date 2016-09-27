@@ -2,32 +2,10 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "0.1.0",
-    "command": "${workspaceRoot}/node_modules/.bin/webpack",
+    "command": "tsc",
     "isShellCommand": true,
-    "args": [
-        "--display-modules",
-        "--progress"
-    ],
-    "echoCommand": true,
-    "showOutput": "always",
-    "tasks": [
-        {
-            "args": [
-                "-d",
-                "--watch"
-            ],
-            "suppressTaskName": true,
-            "isWatching": true,
-            "taskName": "Webpack Dev Watch",
-            "isBuildCommand": true
-        },
-        {
-            "args": [
-                "-p"
-            ],
-            "suppressTaskName": true,
-            "taskName": "Webpack Prod Build",
-            "isBuildCommand": false
-        }
-    ]
+    "args": ["-w", "-p", "."],
+    "showOutput": "silent",
+    "isWatching": true,
+    "problemMatcher": "$tsc-watch"
 }
