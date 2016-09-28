@@ -33,7 +33,7 @@ class Problem extends React.Component {
                         worker,
                     }));
                 };
-                worker.postMessage("WORK!!!"); // Start the worker.
+                worker.postMessage("WORK!!!");
             });
         }
         else {

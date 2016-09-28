@@ -10,6 +10,7 @@
             true,
             "spaces"
         ],
+        "max-line-length": "off",
         "no-console": "off",
         "no-duplicate-variable": true,
         "no-internal-module": true,
