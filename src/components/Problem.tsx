@@ -62,7 +62,7 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
 
     public handleSource() {
         this.setState(Object.assign({}, this.state, {
-            source: this.props.question.constructor.toString(),
+            source: this.props.question.answer.toString(),
         }));
     }
 
@@ -129,7 +129,7 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
                     </CardActions>
                 </Card>
                 <Dialog
-                    title={this.props.question.constructor.name}
+                    title={`Problem ${this.props.question.problemNumber}`}
                     actions={actions}
                     modal={false}
                     open={this.state.sourceWindowOpen}

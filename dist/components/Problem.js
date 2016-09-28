@@ -44,7 +44,7 @@ class Problem extends React.Component {
     }
     handleSource() {
         this.setState(Object.assign({}, this.state, {
-            source: this.props.question.constructor.toString(),
+            source: this.props.question.answer.toString(),
         }));
     }
     handleOpenSourceWindow() {
@@ -77,7 +77,7 @@ class Problem extends React.Component {
                 React.createElement(material_ui_1.CardActions, null, 
                     React.createElement(material_ui_1.FlatButton, {label: "Source Code", onClick: () => this.handleOpenSourceWindow()}), 
                     React.createElement(material_ui_1.FlatButton, {label: "Answer", onClick: () => this.handleAnswer()}))), 
-            React.createElement(material_ui_1.Dialog, {title: this.props.question.constructor.name, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
+            React.createElement(material_ui_1.Dialog, {title: `Problem ${this.props.question.problemNumber}`, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
                 React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
                 React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, 
                     React.createElement("code", null, this.state.source)
