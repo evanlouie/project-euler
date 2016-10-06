@@ -1,8 +1,8 @@
 "use strict";
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem6 extends EulerProblem_1.AbstractEulerProblem {
-    constructor(...args) {
-        super(...args);
+    constructor() {
+        super(...arguments);
         this.problemNumber = 6;
         this.question = `
 The sum of the squares of the first ten natural numbers is,
