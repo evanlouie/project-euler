@@ -13,29 +13,26 @@ For example, 32 + 42 = 9 + 16 = 25 = 52.
 There exists exactly one Pythagorean triplet for which a + b + c = 1000.
 Find the product abc.`;
         this.answer = () => {
-            const isPythagTriple = (a, b, c) => {
-                return (a < b && b < c) && (a * a + b * b === c * c);
+            let product = 0;
+            const isTriplet = (a, b, c) => {
+                return (a < b && b < c && (Math.pow(a, 2) + Math.pow(b, 2) === Math.pow(c, 2)));
             };
-            const isValidA = (a, b, c) => {
-                return (a < b && a < c);
-            };
-            const isValidB = (a, b, c) => {
-                return (a > b && b < c);
-            };
-            const isValidC = (a, b, c) => {
-                return (c > a && c > b);
-            };
-            const generateCombinations = (maxC) => {
-                const range = (start, end) => {
-                    return Array(end - start + 1).fill(0).map((_, index) => start + index);
-                };
-                const combinations = range(0, maxC).map((c, index, array) => {
-                });
-                return combinations;
-            };
-            return "WIP";
+            // by definition; largest b === c and a < b;
+            loop: for (let c = 0; c <= 1000; c++) {
+                for (let b = 0; b <= 1000; b++) {
+                    for (let a = 0; a <= 1000; a++) {
+                        if (isTriplet(a, b, c) && (a + b + c === 1000)) {
+                            product = a * b * c;
+                            break loop;
+                        }
+                    }
+                }
+            }
+            return product.toString();
         };
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem9;
+const p9 = new EulerProblem9();
+p9.answer();

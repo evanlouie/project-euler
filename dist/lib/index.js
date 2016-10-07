@@ -7,6 +7,7 @@ const EulerProblem5_1 = require("./EulerProblem5");
 const EulerProblem6_1 = require("./EulerProblem6");
 const EulerProblem7_1 = require("./EulerProblem7");
 const EulerProblem8_1 = require("./EulerProblem8");
+const EulerProblem9_1 = require("./EulerProblem9");
 function getProblems() {
     return [
         new EulerProblem1_1.default(),
@@ -17,6 +18,7 @@ function getProblems() {
         new EulerProblem6_1.default(),
         new EulerProblem7_1.default(),
         new EulerProblem8_1.default(),
+        new EulerProblem9_1.default(),
     ];
 }
 exports.getProblems = getProblems;
