@@ -1,11 +1,5 @@
 import { AbstractEulerProblem } from "./EulerProblem";
 
-export interface ICombination {
-    a: number;
-    b: number;
-    c: number;
-}
-
 export default class EulerProblem10 extends AbstractEulerProblem {
 
     public problemNumber = 10;
