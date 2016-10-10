@@ -39,6 +39,3 @@ Find the product abc.`;
         return product.toString();
     }
 }
-
-const p9 = new EulerProblem9();
-p9.answer();

@@ -34,5 +34,3 @@ Find the product abc.`;
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem9;
-const p9 = new EulerProblem9();
-p9.answer();
