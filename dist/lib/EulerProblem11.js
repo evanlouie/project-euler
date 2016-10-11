@@ -91,7 +91,9 @@ What is the greatest product of four adjacent numbers in the same direction (up,
                     return products.push(product);
                 });
                 return products;
-            }, []);
+            }, []).sort((a, b) => {
+                return b - a;
+            });
             const verticalFours = columns.map((column) => {
                 return column.reduce((fours, value, index) => {
                     if (column[index + 3] !== undefined) {
@@ -112,8 +114,35 @@ What is the greatest product of four adjacent numbers in the same direction (up,
                     return products.push(product);
                 });
                 return products;
-            }, []);
-            return "WIP";
+            }, []).sort((a, b) => {
+                // sort decending order
+                return b - a;
+            });
+            const diagonalProducts = [];
+            columns.forEach((column, xIndex) => {
+                column.forEach((num, yIndex) => {
+                    // down-right
+                    if (xIndex + 4 <= columns.length && yIndex + 4 <= column.length) {
+                        let product = 1;
+                        for (let dz = 0; dz <= 3; dz++) {
+                            product *= columns[xIndex + dz][yIndex + dz];
+                        }
+                        diagonalProducts.push(product);
+                    }
+                    // down-left
+                    if (xIndex - 4 >= 0 && yIndex + 4 <= column.length) {
+                        let product = 1;
+                        for (let dz = 0; dz <= 3; dz++) {
+                            product *= columns[xIndex - dz][yIndex + dz];
+                        }
+                        diagonalProducts.push(product);
+                    }
+                });
+            });
+            const products = horizontalProducts.concat(verticalProducts, diagonalProducts).sort((a, b) => {
+                return b - a;
+            });
+            return products[0].toString();
         };
     }
 }

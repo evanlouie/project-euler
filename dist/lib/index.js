@@ -1,5 +1,7 @@
 "use strict";
 const EulerProblem1_1 = require("./EulerProblem1");
+const EulerProblem10_1 = require("./EulerProblem10");
+const EulerProblem11_1 = require("./EulerProblem11");
 const EulerProblem2_1 = require("./EulerProblem2");
 const EulerProblem3_1 = require("./EulerProblem3");
 const EulerProblem4_1 = require("./EulerProblem4");
@@ -8,7 +10,6 @@ const EulerProblem6_1 = require("./EulerProblem6");
 const EulerProblem7_1 = require("./EulerProblem7");
 const EulerProblem8_1 = require("./EulerProblem8");
 const EulerProblem9_1 = require("./EulerProblem9");
-const EulerProblem10_1 = require("./EulerProblem10");
 function getProblems() {
     return [
         new EulerProblem1_1.default(),
@@ -21,6 +22,7 @@ function getProblems() {
         new EulerProblem8_1.default(),
         new EulerProblem9_1.default(),
         new EulerProblem10_1.default(),
+        new EulerProblem11_1.default(),
     ];
 }
 exports.getProblems = getProblems;
