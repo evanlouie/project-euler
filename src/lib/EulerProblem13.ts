@@ -2,7 +2,7 @@ import { AbstractEulerProblem } from "./EulerProblem";
 
 export default class EulerProblem13 extends AbstractEulerProblem {
 
-    public problemNumber = 12;
+    public problemNumber = 13;
     public question = `
 Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
 

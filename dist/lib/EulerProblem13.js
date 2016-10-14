@@ -3,7 +3,7 @@ const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem13 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
         super(...arguments);
-        this.problemNumber = 12;
+        this.problemNumber = 13;
         this.question = `
 Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
 
