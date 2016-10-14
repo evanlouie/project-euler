@@ -10,7 +10,11 @@ import * as injectTapEventPlugin from "react-tap-event-plugin";
 injectTapEventPlugin();
 const problems: IEulerProblem[] = getProblems();
 
-document.querySelector("body").style.margin = "0px";
+const body = document.querySelector("body");
+if (body) {
+    body.style.margin = "0px";
+}
+
 ReactDOM.render(
     <MuiThemeProvider>
         <div

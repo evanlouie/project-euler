@@ -8,7 +8,10 @@ const ReactDOM = require("react-dom");
 const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 const problems = lib_1.getProblems();
-document.querySelector("body").style.margin = "0px";
+const body = document.querySelector("body");
+if (body) {
+    body.style.margin = "0px";
+}
 ReactDOM.render(React.createElement(MuiThemeProvider_1.default, null, 
     React.createElement("div", {className: "ProjectEuler", style: { width: "100%" }}, 
         React.createElement(material_ui_1.AppBar, {title: "Project Euler Solutions", showMenuIconButton: false}), 
