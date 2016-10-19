@@ -5,8 +5,8 @@
   "main": "./dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p . && webpack -p --progress",
-    "watch": "webpack -d --progress --watch"
+    "build": "./node_modules/.bin/tsc -p . && ./node_modules/.bin/webpack -p --progress",
+    "watch": "./node_modules/.bin/webpack -d --progress --watch"
   },
   "repository": {
     "type": "git",
@@ -51,6 +51,6 @@
     "tslint": "^3.15.1",
     "tslint-loader": "^2.1.5",
     "typescript": "^2.0.0",
-    "webpack": "^1.13.2"
+    "webpack": "^2.1.0-beta"
   }
 }
