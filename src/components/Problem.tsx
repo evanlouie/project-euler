@@ -82,7 +82,8 @@ export default class Problem extends React.Component<IProblemProps, IProblemStat
 
     public render() {
         const title = `Problem ${this.props.question.problemNumber}`;
-        const subtitle = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
+        const link = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
+        const subtitle = <a href={link} target="_blank">{link}</a>;
 
         const actions = [
             <FlatButton

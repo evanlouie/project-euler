@@ -61,7 +61,8 @@ class Problem extends React.Component {
     }
     render() {
         const title = `Problem ${this.props.question.problemNumber}`;
-        const subtitle = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
+        const link = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
+        const subtitle = React.createElement("a", {href: link, target: "_blank"}, link);
         const actions = [
             React.createElement(material_ui_1.FlatButton, {label: "Cancel", primary: true, onTouchTap: () => this.handleCloseSourceWindow()}),
         ];
