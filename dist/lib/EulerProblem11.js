@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem11 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -146,5 +147,4 @@ What is the greatest product of four adjacent numbers in the same direction (up,
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem11;

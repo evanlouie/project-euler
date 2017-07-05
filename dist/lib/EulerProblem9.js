@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem9 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -32,5 +33,4 @@ Find the product abc.`;
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem9;

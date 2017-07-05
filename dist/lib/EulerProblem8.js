@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem8 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -81,5 +82,4 @@ Find the thirteen adjacent digits in the 1000-digit number that have the greates
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem8;

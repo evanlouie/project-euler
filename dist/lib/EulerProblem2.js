@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem2 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -45,5 +46,4 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem2;

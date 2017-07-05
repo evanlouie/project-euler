@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const material_ui_1 = require("material-ui");
 const React = require("react");
 class Problem extends React.Component {
@@ -62,28 +63,26 @@ class Problem extends React.Component {
     render() {
         const title = `Problem ${this.props.question.problemNumber}`;
         const link = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
-        const subtitle = React.createElement("a", {href: link, target: "_blank"}, link);
+        const subtitle = React.createElement("a", { href: link, target: "_blank" }, link);
         const actions = [
-            React.createElement(material_ui_1.FlatButton, {label: "Cancel", primary: true, onTouchTap: () => this.handleCloseSourceWindow()}),
+            React.createElement(material_ui_1.FlatButton, { label: "Cancel", primary: true, onTouchTap: () => this.handleCloseSourceWindow() }),
         ];
-        return (React.createElement("div", {className: "Problem"}, 
-            React.createElement("pre", null), 
-            React.createElement(material_ui_1.Card, null, 
-                React.createElement(material_ui_1.CardHeader, {title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false}), 
-                React.createElement(material_ui_1.CardText, {expandable: false}, 
-                    React.createElement("pre", {className: "problem-text", style: { whiteSpace: "pre-wrap" }}, this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")), 
+        return (React.createElement("div", { className: "Problem" },
+            React.createElement("pre", null),
+            React.createElement(material_ui_1.Card, null,
+                React.createElement(material_ui_1.CardHeader, { title: title, subtitle: subtitle, actAsExpander: false, showExpandableButton: false }),
+                React.createElement(material_ui_1.CardText, { expandable: false },
+                    React.createElement("pre", { className: "problem-text", style: { whiteSpace: "pre-wrap" } }, this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")),
                     (this.state.isComputing && this.state.answer === "") ?
-                        React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate"}) :
-                        this.state.answer), 
-                React.createElement(material_ui_1.CardActions, null, 
-                    React.createElement(material_ui_1.FlatButton, {label: "Source Code", onClick: () => this.handleOpenSourceWindow()}), 
-                    React.createElement(material_ui_1.FlatButton, {label: "Answer", onClick: () => this.handleAnswer()}))), 
-            React.createElement(material_ui_1.Dialog, {title: `Problem ${this.props.question.problemNumber}`, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true}, this.state.source === "" && this.state.sourceWindowOpen ?
-                React.createElement(material_ui_1.LinearProgress, {mode: "indeterminate", style: { margin: "1em 0 0 0" }}) :
-                React.createElement("pre", {style: { whiteSpace: "pre-wrap" }}, 
-                    React.createElement("code", null, this.state.source)
-                ))));
+                        React.createElement(material_ui_1.LinearProgress, { mode: "indeterminate" }) :
+                        this.state.answer),
+                React.createElement(material_ui_1.CardActions, null,
+                    React.createElement(material_ui_1.FlatButton, { label: "Source Code", onClick: () => this.handleOpenSourceWindow() }),
+                    React.createElement(material_ui_1.FlatButton, { label: "Answer", onClick: () => this.handleAnswer() }))),
+            React.createElement(material_ui_1.Dialog, { title: `Problem ${this.props.question.problemNumber}`, actions: actions, modal: false, open: this.state.sourceWindowOpen, onRequestClose: () => this.handleCloseSourceWindow(), autoScrollBodyContent: true }, this.state.source === "" && this.state.sourceWindowOpen ?
+                React.createElement(material_ui_1.LinearProgress, { mode: "indeterminate", style: { margin: "1em 0 0 0" } }) :
+                React.createElement("pre", { style: { whiteSpace: "pre-wrap" } },
+                    React.createElement("code", null, this.state.source)))));
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Problem;

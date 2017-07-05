@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem13 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -222,5 +223,4 @@ Work out the first ten digits of the sum of the following one-hundred 50-digit n
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem13;

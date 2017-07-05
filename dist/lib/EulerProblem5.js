@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem5 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -30,5 +31,4 @@ What is the smallest positive number that is evenly divisible by all of the numb
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem5;

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem6 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -34,5 +35,4 @@ Find the difference between the sum of the squares of the first one hundred natu
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem6;

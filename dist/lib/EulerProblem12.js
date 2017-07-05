@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem12 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -58,5 +59,4 @@ What is the value of the first triangle number to have over five hundred divisor
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem12;

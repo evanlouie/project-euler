@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem1_1 = require("./EulerProblem1");
 const EulerProblem10_1 = require("./EulerProblem10");
 const EulerProblem11_1 = require("./EulerProblem11");

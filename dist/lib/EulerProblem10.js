@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem10 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -35,5 +36,4 @@ Find the sum of all the primes below two million.`;
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem10;

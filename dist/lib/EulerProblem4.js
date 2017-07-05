@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem4 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -30,5 +31,4 @@ Find the largest palindrome made from the product of two 3-digit numbers.`;
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem4;

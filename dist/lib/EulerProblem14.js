@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const EulerProblem_1 = require("./EulerProblem");
 class EulerProblem14 extends EulerProblem_1.AbstractEulerProblem {
     constructor() {
@@ -59,5 +60,4 @@ NOTE: Once the chain starts the terms are allowed to go above one million.`;
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = EulerProblem14;
