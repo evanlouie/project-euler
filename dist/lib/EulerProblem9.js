@@ -16,13 +16,13 @@ Find the product abc.`;
         this.answer = () => {
             let product = 0;
             const isTriplet = (a, b, c) => {
-                return (a < b && b < c && (Math.pow(a, 2) + Math.pow(b, 2) === Math.pow(c, 2)));
+                return (a < b && b < c && Math.pow(a, 2) + Math.pow(b, 2) === Math.pow(c, 2));
             };
             // by definition; largest b === c and a < b;
             loop: for (let c = 0; c <= 1000; c++) {
                 for (let b = 0; b <= 1000; b++) {
                     for (let a = 0; a <= 1000; a++) {
-                        if (isTriplet(a, b, c) && (a + b + c === 1000)) {
+                        if (isTriplet(a, b, c) && a + b + c === 1000) {
                             product = a * b * c;
                             break loop;
                         }

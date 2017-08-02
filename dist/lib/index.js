@@ -29,7 +29,7 @@ function getProblems() {
         new EulerProblem11_1.default(),
         new EulerProblem12_1.default(),
         new EulerProblem13_1.default(),
-        new EulerProblem14_1.default(),
+        new EulerProblem14_1.default()
     ];
 }
 exports.getProblems = getProblems;

@@ -209,9 +209,13 @@ Work out the first ten digits of the sum of the following one-hundred 50-digit n
 72107838435069186155435662884062257473692284509516
 20849603980134001723930671666823555245252804609722
 53503534226472524250874054075591789781264330331690`;
-            const sum = bigAssNumbers.split(/\n/).filter((char) => {
+            const sum = bigAssNumbers
+                .split(/\n/)
+                .filter(char => {
                 return char !== "";
-            }).map((num) => Number(num)).reduce((runningSum, val) => {
+            })
+                .map(num => Number(num))
+                .reduce((runningSum, val) => {
                 runningSum += val;
                 return runningSum;
             }, 0);

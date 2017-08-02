@@ -54,11 +54,17 @@ What is the greatest product of four adjacent numbers in the same direction (up,
 20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48`;
-            const allNumbers = numberMatrix.split(/\D/).filter((num) => num !== "").map((num) => Number(num));
-            const rows = numberMatrix.split(/\n/).filter((num) => {
+            const allNumbers = numberMatrix
+                .split(/\D/)
+                .filter(num => num !== "")
+                .map(num => Number(num));
+            const rows = numberMatrix
+                .split(/\n/)
+                .filter((num) => {
                 // remove white space chars
                 return num !== "";
-            }).map((numArray) => {
+            })
+                .map((numArray) => {
                 // split by non digits and convert to numbers
                 return numArray.split(/\D/).map((num) => {
                     return Number(num);
@@ -72,7 +78,7 @@ What is the greatest product of four adjacent numbers in the same direction (up,
                 carry[verticalIndex].push(value);
                 return carry;
             }, []);
-            const horizontalFours = rows.map((row) => {
+            const horizontalFours = rows.map(row => {
                 return row.reduce((fours, value, index) => {
                     if (row[index + 3] !== undefined) {
                         // use + 4, slice doesn't include end
@@ -81,21 +87,23 @@ What is the greatest product of four adjacent numbers in the same direction (up,
                     return fours;
                 }, []);
             });
-            const horizontalProducts = horizontalFours.reduce((products, row) => {
-                const rowProducts = row.map((fourNums) => {
+            const horizontalProducts = horizontalFours
+                .reduce((products, row) => {
+                const rowProducts = row.map(fourNums => {
                     return fourNums.reduce((product, value) => {
                         product *= value;
                         return product;
                     }, 1);
                 });
-                rowProducts.forEach((product) => {
+                rowProducts.forEach(product => {
                     return products.push(product);
                 });
                 return products;
-            }, []).sort((a, b) => {
+            }, [])
+                .sort((a, b) => {
                 return b - a;
             });
-            const verticalFours = columns.map((column) => {
+            const verticalFours = columns.map(column => {
                 return column.reduce((fours, value, index) => {
                     if (column[index + 3] !== undefined) {
                         // use + 4, slice doesn't include end
@@ -104,18 +112,20 @@ What is the greatest product of four adjacent numbers in the same direction (up,
                     return fours;
                 }, []);
             });
-            const verticalProducts = verticalFours.reduce((products, column) => {
-                const columnProducts = column.map((fourNums) => {
+            const verticalProducts = verticalFours
+                .reduce((products, column) => {
+                const columnProducts = column.map(fourNums => {
                     return fourNums.reduce((product, value) => {
                         product *= value;
                         return product;
                     }, 1);
                 });
-                columnProducts.forEach((product) => {
+                columnProducts.forEach(product => {
                     return products.push(product);
                 });
                 return products;
-            }, []).sort((a, b) => {
+            }, [])
+                .sort((a, b) => {
                 // sort decending order
                 return b - a;
             });
@@ -140,7 +150,9 @@ What is the greatest product of four adjacent numbers in the same direction (up,
                     }
                 });
             });
-            const products = horizontalProducts.concat(verticalProducts, diagonalProducts).sort((a, b) => {
+            const products = horizontalProducts
+                .concat(verticalProducts, diagonalProducts)
+                .sort((a, b) => {
                 return b - a;
             });
             return products[0].toString();

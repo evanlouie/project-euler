@@ -21,13 +21,17 @@ Find the sum of all the primes below two million.`;
                 }
                 return n > 1;
             };
-            const sumOfPrimesUnderTwoMillion = Array(2000000).fill(0).map((value, index) => {
+            const sumOfPrimesUnderTwoMillion = Array(2000000)
+                .fill(0)
+                .map((value, index) => {
                 // fill array with 1 - 2000000
                 return index + 1;
-            }).filter((value) => {
+            })
+                .filter(value => {
                 // filter out non prime
                 return isPrime(value);
-            }).reduce((sum, curr) => {
+            })
+                .reduce((sum, curr) => {
                 // reduce primes to sum
                 sum += curr;
                 return sum;

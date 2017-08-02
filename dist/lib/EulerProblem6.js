@@ -20,7 +20,7 @@ Find the difference between the sum of the squares of the first one hundred natu
             const sumOfSquares = (n) => {
                 let sum = 0;
                 for (let x = 0; x <= n; x++) {
-                    sum = sum + (x * x);
+                    sum = sum + x * x;
                 }
                 return sum;
             };

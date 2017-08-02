@@ -15,20 +15,20 @@ import EulerProblem8 from "./EulerProblem8";
 import EulerProblem9 from "./EulerProblem9";
 
 export function getProblems(): IEulerProblem[] {
-    return [
-        new EulerProblem1(),
-        new EulerProblem2(),
-        new EulerProblem3(),
-        new EulerProblem4(),
-        new EulerProblem5(),
-        new EulerProblem6(),
-        new EulerProblem7(),
-        new EulerProblem8(),
-        new EulerProblem9(),
-        new EulerProblem10(),
-        new EulerProblem11(),
-        new EulerProblem12(),
-        new EulerProblem13(),
-        new EulerProblem14(),
-    ];
+  return [
+    new EulerProblem1(),
+    new EulerProblem2(),
+    new EulerProblem3(),
+    new EulerProblem4(),
+    new EulerProblem5(),
+    new EulerProblem6(),
+    new EulerProblem7(),
+    new EulerProblem8(),
+    new EulerProblem9(),
+    new EulerProblem10(),
+    new EulerProblem11(),
+    new EulerProblem12(),
+    new EulerProblem13(),
+    new EulerProblem14()
+  ];
 }

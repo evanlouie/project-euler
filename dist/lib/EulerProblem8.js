@@ -53,30 +53,37 @@ Find the thirteen adjacent digits in the 1000-digit number that have the greates
 84580156166097919133875499200524063689912560717606
 05886116467109405077541002256983155200055935729725
 71636269561882670428252483600823257530420752963450`;
-            const products = crazyBigNumber.split("").filter((char) => {
+            const products = crazyBigNumber
+                .split("")
+                .filter(char => {
                 // only keep numbers
                 return char.match(/\d/);
-            }).map((char) => {
+            })
+                .map(char => {
                 // convert all strings to numbers
                 return Number(char);
-            }).reduce((carry, current, index, array) => {
+            })
+                .reduce((carry, current, index, array) => {
                 // Create array of 13 number arrays
                 if (array.length > index + 13) {
                     const thirteenNums = array.slice(index, index + 13);
                     carry.push(thirteenNums);
                 }
                 return carry;
-            }, []).filter((thirteenNums) => {
+            }, [])
+                .filter((thirteenNums) => {
                 // Only keep arrays that don't have 0's
                 return thirteenNums.indexOf(0) <= -1;
-            }).reduce((carry, current, index, array) => {
+            })
+                .reduce((carry, current, index, array) => {
                 // reduce 13 nums to product
                 const product = current.reduce((prod, num) => {
                     return prod * num;
                 }, 1);
                 carry.push(product);
                 return carry;
-            }, []).sort((a, b) => b - a);
+            }, [])
+                .sort((a, b) => b - a);
             answer = products[0];
             return answer.toString();
         };

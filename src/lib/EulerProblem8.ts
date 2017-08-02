@@ -1,9 +1,8 @@
 import { AbstractEulerProblem } from "./EulerProblem";
 
 export default class EulerProblem8 extends AbstractEulerProblem {
-
-    public problemNumber = 8;
-    public question = `
+  public problemNumber = 8;
+  public question = `
 The four adjacent digits in the 1000-digit number that have the greatest product are 9 × 9 × 8 × 9 = 5832.
 
 73167176531330624919225119674426574742355349194934
@@ -29,9 +28,9 @@ The four adjacent digits in the 1000-digit number that have the greatest product
 
 Find the thirteen adjacent digits in the 1000-digit number that have the greatest product. What is the value of this product?`;
 
-    public answer = () => {
-        let answer = 0;
-        const crazyBigNumber = `
+  public answer = () => {
+    let answer = 0;
+    const crazyBigNumber = `
 73167176531330624919225119674426574742355349194934
 96983520312774506326239578318016984801869478851843
 85861560789112949495459501737958331952853208805511
@@ -53,32 +52,55 @@ Find the thirteen adjacent digits in the 1000-digit number that have the greates
 05886116467109405077541002256983155200055935729725
 71636269561882670428252483600823257530420752963450`;
 
-        const products = crazyBigNumber.split("").filter((char) => {
-            // only keep numbers
-            return char.match(/\d/);
-        }).map((char) => {
-            // convert all strings to numbers
-            return Number(char);
-        }).reduce((carry: number[][], current: number, index: number, array: number[]) => {
-            // Create array of 13 number arrays
-            if (array.length > index + 13) {
-                const thirteenNums = array.slice(index, index + 13);
-                carry.push(thirteenNums);
-            }
-            return carry;
-        }, []).filter((thirteenNums: number[]) => {
-            // Only keep arrays that don't have 0's
-            return thirteenNums.indexOf(0) <= -1;
-        }).reduce((carry: number[], current: number[], index: number, array: number[][]) => {
-            // reduce 13 nums to product
-            const product = current.reduce((prod, num) => {
-                return prod * num;
-            }, 1);
-            carry.push(product);
-            return carry;
-        }, []).sort((a, b) => b - a);
+    const products = crazyBigNumber
+      .split("")
+      .filter(char => {
+        // only keep numbers
+        return char.match(/\d/);
+      })
+      .map(char => {
+        // convert all strings to numbers
+        return Number(char);
+      })
+      .reduce(
+        (
+          carry: number[][],
+          current: number,
+          index: number,
+          array: number[]
+        ) => {
+          // Create array of 13 number arrays
+          if (array.length > index + 13) {
+            const thirteenNums = array.slice(index, index + 13);
+            carry.push(thirteenNums);
+          }
+          return carry;
+        },
+        []
+      )
+      .filter((thirteenNums: number[]) => {
+        // Only keep arrays that don't have 0's
+        return thirteenNums.indexOf(0) <= -1;
+      })
+      .reduce(
+        (
+          carry: number[],
+          current: number[],
+          index: number,
+          array: number[][]
+        ) => {
+          // reduce 13 nums to product
+          const product = current.reduce((prod, num) => {
+            return prod * num;
+          }, 1);
+          carry.push(product);
+          return carry;
+        },
+        []
+      )
+      .sort((a, b) => b - a);
 
-        answer = products[0];
-        return answer.toString();
-    }
+    answer = products[0];
+    return answer.toString();
+  };
 }

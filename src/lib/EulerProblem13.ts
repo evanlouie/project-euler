@@ -1,9 +1,8 @@
 import { AbstractEulerProblem } from "./EulerProblem";
 
 export default class EulerProblem13 extends AbstractEulerProblem {
-
-    public problemNumber = 13;
-    public question = `
+  public problemNumber = 13;
+  public question = `
 Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
 
 37107287533902102798797998220837590246510135740250
@@ -107,9 +106,8 @@ Work out the first ten digits of the sum of the following one-hundred 50-digit n
 20849603980134001723930671666823555245252804609722
 53503534226472524250874054075591789781264330331690`;
 
-    public answer = () => {
-        const bigAssNumbers =
-            `37107287533902102798797998220837590246510135740250
+  public answer = () => {
+    const bigAssNumbers = `37107287533902102798797998220837590246510135740250
 46376937677490009712648124896970078050417018260538
 74324986199524741059474233309513058123726617309629
 91942213363574161572522430563301811072406154908250
@@ -210,17 +208,21 @@ Work out the first ten digits of the sum of the following one-hundred 50-digit n
 20849603980134001723930671666823555245252804609722
 53503534226472524250874054075591789781264330331690`;
 
-        const sum: number = bigAssNumbers.split(/\n/).filter((char) => {
-            return char !== "";
-        }).map((num) => Number(num)).reduce((runningSum, val) => {
-            runningSum += val;
-            return runningSum;
-        }, 0);
+    const sum: number = bigAssNumbers
+      .split(/\n/)
+      .filter(char => {
+        return char !== "";
+      })
+      .map(num => Number(num))
+      .reduce((runningSum, val) => {
+        runningSum += val;
+        return runningSum;
+      }, 0);
 
-        // remove decimal place and 'e'
-        const sumAsString = sum.toString().split(/\D/).join("");
-        // we can grab the first 10 as the exponent occurs at 15th place
-        const first10 = sumAsString.slice(0, 10);
-        return first10;
-    }
+    // remove decimal place and 'e'
+    const sumAsString = sum.toString().split(/\D/).join("");
+    // we can grab the first 10 as the exponent occurs at 15th place
+    const first10 = sumAsString.slice(0, 10);
+    return first10;
+  };
 }

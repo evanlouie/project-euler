@@ -1,9 +1,8 @@
 import { AbstractEulerProblem } from "./EulerProblem";
 
 export default class EulerProblem11 extends AbstractEulerProblem {
-
-    public problemNumber = 11;
-    public question = `
+  public problemNumber = 11;
+  public question = `
 In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
 
 08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
@@ -31,8 +30,8 @@ The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
 
 What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?`;
 
-    public answer = () => {
-        const numberMatrix: string = `
+  public answer = () => {
+    const numberMatrix: string = `
 08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
 81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65
@@ -54,107 +53,125 @@ What is the greatest product of four adjacent numbers in the same direction (up,
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48`;
 
-        const allNumbers: number[] = numberMatrix.split(/\D/).filter((num) => num !== "").map((num) => Number(num));
-        const rows: number[][] = numberMatrix.split(/\n/).filter((num: string) => {
-            // remove white space chars
-            return num !== "";
-        }).map((numArray: string) => {
-            // split by non digits and convert to numbers
-            return numArray.split(/\D/).map((num: string) => {
-                return Number(num);
-            });
+    const allNumbers: number[] = numberMatrix
+      .split(/\D/)
+      .filter(num => num !== "")
+      .map(num => Number(num));
+    const rows: number[][] = numberMatrix
+      .split(/\n/)
+      .filter((num: string) => {
+        // remove white space chars
+        return num !== "";
+      })
+      .map((numArray: string) => {
+        // split by non digits and convert to numbers
+        return numArray.split(/\D/).map((num: string) => {
+          return Number(num);
         });
-        const columns: number[][] = allNumbers.reduce((carry: number[][], value: number, index: number, array: number[]) => {
-            const verticalIndex = index % 20;
-            if (!Array.isArray(carry[verticalIndex])) {
-                carry[verticalIndex] = [];
-            }
-            carry[verticalIndex].push(value);
+      });
+    const columns: number[][] = allNumbers.reduce(
+      (carry: number[][], value: number, index: number, array: number[]) => {
+        const verticalIndex = index % 20;
+        if (!Array.isArray(carry[verticalIndex])) {
+          carry[verticalIndex] = [];
+        }
+        carry[verticalIndex].push(value);
 
-            return carry;
-        }, []);
+        return carry;
+      },
+      []
+    );
 
-        const horizontalFours: number[][][] = rows.map((row) => {
-            return row.reduce((fours: number[][], value: number, index: number) => {
-                if (row[index + 3] !== undefined) {
-                    // use + 4, slice doesn't include end
-                    fours.push(row.slice(index, index + 4));
-                }
-                return fours;
-            }, []);
-        });
+    const horizontalFours: number[][][] = rows.map(row => {
+      return row.reduce((fours: number[][], value: number, index: number) => {
+        if (row[index + 3] !== undefined) {
+          // use + 4, slice doesn't include end
+          fours.push(row.slice(index, index + 4));
+        }
+        return fours;
+      }, []);
+    });
 
-        const horizontalProducts: number[] = horizontalFours.reduce((products: number[], row: number[][]) => {
-            const rowProducts: number[] = row.map((fourNums) => {
-                return fourNums.reduce((product, value) => {
-                    product *= value;
-                    return product;
-                }, 1);
-            });
-
-            rowProducts.forEach((product) => {
-                return products.push(product);
-            });
-
-            return products;
-        }, []).sort((a, b) => {
-            return b - a;
-        });
-
-        const verticalFours: number[][][] = columns.map((column) => {
-            return column.reduce((fours: number[][], value: number, index: number) => {
-                if (column[index + 3] !== undefined) {
-                    // use + 4, slice doesn't include end
-                    fours.push(column.slice(index, index + 4));
-                }
-                return fours;
-            }, []);
+    const horizontalProducts: number[] = horizontalFours
+      .reduce((products: number[], row: number[][]) => {
+        const rowProducts: number[] = row.map(fourNums => {
+          return fourNums.reduce((product, value) => {
+            product *= value;
+            return product;
+          }, 1);
         });
 
-        const verticalProducts: number[] = verticalFours.reduce((products: number[], column: number[][]) => {
-            const columnProducts: number[] = column.map((fourNums) => {
-                return fourNums.reduce((product, value) => {
-                    product *= value;
-                    return product;
-                }, 1);
-            });
-
-            columnProducts.forEach((product) => {
-                return products.push(product);
-            });
-
-            return products;
-        }, []).sort((a, b) => {
-            // sort decending order
-            return b - a;
+        rowProducts.forEach(product => {
+          return products.push(product);
         });
 
-        const diagonalProducts: number[] = [];
-        columns.forEach((column, xIndex) => {
-            column.forEach((num, yIndex) => {
-                // down-right
-                if (xIndex + 4 <= columns.length && yIndex + 4 <= column.length) {
-                    let product = 1;
-                    for (let dz = 0; dz <= 3; dz++) {
-                        product *= columns[xIndex + dz][yIndex + dz];
-                    }
-                    diagonalProducts.push(product);
-                }
-                // down-left
-                if (xIndex - 4 >= 0 && yIndex + 4 <= column.length) {
-                    let product = 1;
-                    for (let dz = 0; dz <= 3; dz++) {
-                        product *= columns[xIndex - dz][yIndex + dz];
-                    }
-                    diagonalProducts.push(product);
-                }
-            });
+        return products;
+      }, [])
+      .sort((a, b) => {
+        return b - a;
+      });
+
+    const verticalFours: number[][][] = columns.map(column => {
+      return column.reduce(
+        (fours: number[][], value: number, index: number) => {
+          if (column[index + 3] !== undefined) {
+            // use + 4, slice doesn't include end
+            fours.push(column.slice(index, index + 4));
+          }
+          return fours;
+        },
+        []
+      );
+    });
+
+    const verticalProducts: number[] = verticalFours
+      .reduce((products: number[], column: number[][]) => {
+        const columnProducts: number[] = column.map(fourNums => {
+          return fourNums.reduce((product, value) => {
+            product *= value;
+            return product;
+          }, 1);
         });
 
-        const products: number[] = horizontalProducts.concat(verticalProducts, diagonalProducts).sort((a: number, b: number) => {
-            return b - a;
+        columnProducts.forEach(product => {
+          return products.push(product);
         });
 
-        return products[0].toString();
-    }
+        return products;
+      }, [])
+      .sort((a, b) => {
+        // sort decending order
+        return b - a;
+      });
+
+    const diagonalProducts: number[] = [];
+    columns.forEach((column, xIndex) => {
+      column.forEach((num, yIndex) => {
+        // down-right
+        if (xIndex + 4 <= columns.length && yIndex + 4 <= column.length) {
+          let product = 1;
+          for (let dz = 0; dz <= 3; dz++) {
+            product *= columns[xIndex + dz][yIndex + dz];
+          }
+          diagonalProducts.push(product);
+        }
+        // down-left
+        if (xIndex - 4 >= 0 && yIndex + 4 <= column.length) {
+          let product = 1;
+          for (let dz = 0; dz <= 3; dz++) {
+            product *= columns[xIndex - dz][yIndex + dz];
+          }
+          diagonalProducts.push(product);
+        }
+      });
+    });
+
+    const products: number[] = horizontalProducts
+      .concat(verticalProducts, diagonalProducts)
+      .sort((a: number, b: number) => {
+        return b - a;
+      });
+
+    return products[0].toString();
+  };
 }

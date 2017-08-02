@@ -1,9 +1,8 @@
 import { AbstractEulerProblem } from "./EulerProblem";
 
 export default class EulerProblem14 extends AbstractEulerProblem {
-
-    public problemNumber = 14;
-    public question = `
+  public problemNumber = 14;
+  public question = `
 The following iterative sequence is defined for the set of positive integers:
 
 n → n/2 (n is even)
@@ -18,48 +17,48 @@ Which starting number, under one million, produces the longest chain?
 
 NOTE: Once the chain starts the terms are allowed to go above one million.`;
 
-    public answer = () => {
-        /**
-         * dictionary of already caclulated numbers and corresponding sequence length
-         */
-        const memory: { [n: number]: number; } = {
-            13: 10,
-        };
+  public answer = () => {
+    /**
+     * dictionary of already caclulated numbers and corresponding sequence length
+     */
+    const memory: { [n: number]: number } = {
+      13: 10
+    };
 
-        /**
-         * Calculates the sequence length for any given number
-         */
-        const calculateSequenceLength = (start: number = 1): number => {
-            if (start <= 1) {
-                return 1;
-            } else if (memory[start]) {
-                return memory[start];
-            } else {
-                memory[start] = 1 + calculateSequenceLength(next(start));
-                return memory[start];
-            }
-        };
+    /**
+     * Calculates the sequence length for any given number
+     */
+    const calculateSequenceLength = (start: number = 1): number => {
+      if (start <= 1) {
+        return 1;
+      } else if (memory[start]) {
+        return memory[start];
+      } else {
+        memory[start] = 1 + calculateSequenceLength(next(start));
+        return memory[start];
+      }
+    };
 
-        /**
-         * calculate the next number in the sequence
-         */
-        const next = (current: number): number => {
-            const even = (evenNumber: number): number => evenNumber / 2;
-            const odd = (oddNumber: number): number => (3 * oddNumber) + 1;
+    /**
+     * calculate the next number in the sequence
+     */
+    const next = (current: number): number => {
+      const even = (evenNumber: number): number => evenNumber / 2;
+      const odd = (oddNumber: number): number => 3 * oddNumber + 1;
 
-            return (current % 2 === 0) ? even(current) : odd(current);
-        };
+      return current % 2 === 0 ? even(current) : odd(current);
+    };
 
-        // BEGIN ANSWER!
+    // BEGIN ANSWER!
 
-        // iterate up to 999,999; afterwords, sort by meory values and get corresponding key for largest value
-        const sequenceLengths: number[] = Array(1000000)
-            .fill(0)
-            .map((value, index) => calculateSequenceLength(index));
+    // iterate up to 999,999; afterwords, sort by meory values and get corresponding key for largest value
+    const sequenceLengths: number[] = Array(1000000)
+      .fill(0)
+      .map((value, index) => calculateSequenceLength(index));
 
-        const sortedSequence = sequenceLengths.map((v) => v).sort((a, b) => b - a);
-        const answer = sequenceLengths.indexOf(sortedSequence[0]);
+    const sortedSequence = sequenceLengths.map(v => v).sort((a, b) => b - a);
+    const answer = sequenceLengths.indexOf(sortedSequence[0]);
 
-        return answer.toString();
-    }
+    return answer.toString();
+  };
 }

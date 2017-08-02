@@ -24,7 +24,7 @@ NOTE: Once the chain starts the terms are allowed to go above one million.`;
              * dictionary of already caclulated numbers and corresponding sequence length
              */
             const memory = {
-                13: 10,
+                13: 10
             };
             /**
              * Calculates the sequence length for any given number
@@ -46,15 +46,15 @@ NOTE: Once the chain starts the terms are allowed to go above one million.`;
              */
             const next = (current) => {
                 const even = (evenNumber) => evenNumber / 2;
-                const odd = (oddNumber) => (3 * oddNumber) + 1;
-                return (current % 2 === 0) ? even(current) : odd(current);
+                const odd = (oddNumber) => 3 * oddNumber + 1;
+                return current % 2 === 0 ? even(current) : odd(current);
             };
             // BEGIN ANSWER!
             // iterate up to 999,999; afterwords, sort by meory values and get corresponding key for largest value
             const sequenceLengths = Array(1000000)
                 .fill(0)
                 .map((value, index) => calculateSequenceLength(index));
-            const sortedSequence = sequenceLengths.map((v) => v).sort((a, b) => b - a);
+            const sortedSequence = sequenceLengths.map(v => v).sort((a, b) => b - a);
             const answer = sequenceLengths.indexOf(sortedSequence[0]);
             return answer.toString();
         };
