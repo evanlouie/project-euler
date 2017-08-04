@@ -5,8 +5,8 @@
   "main": "./dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/webpack -p --progress",
-    "watch": "./node_modules/.bin/webpack -d --progress --watch"
+    "build": "webpack -p --progress",
+    "watch": "webpack -d --progress --watch"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/evanlouie/project-euler#readme",
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "material-ui": "^0.18.7",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
