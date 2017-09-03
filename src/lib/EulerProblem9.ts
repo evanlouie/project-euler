@@ -20,9 +20,7 @@ Find the product abc.`;
   public answer = () => {
     let product = 0;
     const isTriplet = (a: number, b: number, c: number): boolean => {
-      return (
-        a < b && b < c && Math.pow(a, 2) + Math.pow(b, 2) === Math.pow(c, 2)
-      );
+      return a < b && b < c && Math.pow(a, 2) + Math.pow(b, 2) === Math.pow(c, 2);
     };
     // by definition; largest b === c and a < b;
     loop: for (let c = 0; c <= 1000; c++) {

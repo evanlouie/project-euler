@@ -26,9 +26,7 @@ ReactDOM.render(
           maxWidth: "750px"
         }}
       >
-        {problems.map((problem: IEulerProblem) =>
-          <Problem key={problem.problemNumber} question={problem} />
-        )}
+        {problems.map((problem: IEulerProblem) => <Problem key={problem.problemNumber} question={problem} />)}
       </div>
     </div>
   </MuiThemeProvider>,

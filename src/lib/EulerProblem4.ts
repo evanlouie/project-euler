@@ -14,7 +14,13 @@ Find the largest palindrome made from the product of two 3-digit numbers.`;
   public answer = (): string => {
     const isPalindromic = (n: number): boolean => {
       const asString = n.toString();
-      return asString === asString.split("").reverse().join("");
+      return (
+        asString ===
+        asString
+          .split("")
+          .reverse()
+          .join("")
+      );
     };
 
     let largestPalendrome = 0;

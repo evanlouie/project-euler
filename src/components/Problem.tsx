@@ -1,12 +1,4 @@
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardText,
-  Dialog,
-  FlatButton,
-  LinearProgress
-} from "material-ui";
+import { Card, CardActions, CardHeader, CardText, Dialog, FlatButton, LinearProgress } from "material-ui";
 import * as React from "react";
 
 import { AbstractEulerProblem } from "../lib/EulerProblem";
@@ -25,10 +17,7 @@ export interface IProblemState {
   worker: Worker | null;
 }
 
-export default class Problem extends React.Component<
-  IProblemProps,
-  IProblemState
-> {
+export default class Problem extends React.Component<IProblemProps, IProblemState> {
   constructor(props: IProblemProps) {
     super(props);
     this.state = {
@@ -52,8 +41,7 @@ export default class Problem extends React.Component<
           isComputing: true
         }),
         () => {
-          const response = `self.onmessage=function(){postMessage(eval((${this
-            .props.question.answer})()))}`;
+          const response = `self.onmessage=function(){postMessage(eval((${this.props.question.answer})()))}`;
           const runnable = new Blob([response], { type: "text/javascript" });
           const worker = new Worker(window.URL.createObjectURL(runnable));
           worker.onmessage = e => {
@@ -107,21 +95,14 @@ export default class Problem extends React.Component<
 
   public render() {
     const title = `Problem ${this.props.question.problemNumber}`;
-    const link = `https://projecteuler.net/problem=${this.props.question
-      .problemNumber}`;
+    const link = `https://projecteuler.net/problem=${this.props.question.problemNumber}`;
     const subtitle = (
       <a href={link} target="_blank">
         {link}
       </a>
     );
 
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={() => this.handleCloseSourceWindow()}
-      />
-    ];
+    const actions = [<FlatButton label="Cancel" primary={true} onTouchTap={() => this.handleCloseSourceWindow()} />];
 
     return (
       <div className="Problem">
@@ -131,27 +112,19 @@ export default class Problem extends React.Component<
           }
         </pre>
         <Card>
-          <CardHeader
-            title={title}
-            subtitle={subtitle}
-            actAsExpander={false}
-            showExpandableButton={false}
-          />
+          <CardHeader title={title} subtitle={subtitle} actAsExpander={false} showExpandableButton={false} />
           <CardText expandable={false}>
             <pre className="problem-text" style={{ whiteSpace: "pre-wrap" }}>
-              {this.props.question.question
-                .replace(/\t/g, "")
-                .replace(/^\n/g, "")}
+              {this.props.question.question.replace(/\t/g, "").replace(/^\n/g, "")}
             </pre>
-            {this.state.isComputing && this.state.answer === ""
-              ? <LinearProgress mode="indeterminate" />
-              : this.state.answer}
+            {this.state.isComputing && this.state.answer === "" ? (
+              <LinearProgress mode="indeterminate" />
+            ) : (
+              this.state.answer
+            )}
           </CardText>
           <CardActions>
-            <FlatButton
-              label="Source Code"
-              onClick={() => this.handleOpenSourceWindow()}
-            />
+            <FlatButton label="Source Code" onClick={() => this.handleOpenSourceWindow()} />
             <FlatButton label="Answer" onClick={() => this.handleAnswer()} />
           </CardActions>
         </Card>
@@ -163,16 +136,13 @@ export default class Problem extends React.Component<
           onRequestClose={() => this.handleCloseSourceWindow()}
           autoScrollBodyContent={true}
         >
-          {this.state.source === "" && this.state.sourceWindowOpen
-            ? <LinearProgress
-                mode="indeterminate"
-                style={{ margin: "1em 0 0 0" }}
-              />
-            : <pre style={{ whiteSpace: "pre-wrap" }}>
-                <code>
-                  ({this.state.source})();
-                </code>
-              </pre>}
+          {this.state.source === "" && this.state.sourceWindowOpen ? (
+            <LinearProgress mode="indeterminate" style={{ margin: "1em 0 0 0" }} />
+          ) : (
+            <pre style={{ whiteSpace: "pre-wrap" }}>
+              <code>({this.state.source})();</code>
+            </pre>
+          )}
         </Dialog>
       </div>
     );

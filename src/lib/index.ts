@@ -5,6 +5,7 @@ import EulerProblem11 from "./EulerProblem11";
 import EulerProblem12 from "./EulerProblem12";
 import EulerProblem13 from "./EulerProblem13";
 import EulerProblem14 from "./EulerProblem14";
+import EulerProblem15 from "./EulerProblem15";
 import EulerProblem2 from "./EulerProblem2";
 import EulerProblem3 from "./EulerProblem3";
 import EulerProblem4 from "./EulerProblem4";
@@ -29,6 +30,7 @@ export function getProblems(): IEulerProblem[] {
     new EulerProblem11(),
     new EulerProblem12(),
     new EulerProblem13(),
-    new EulerProblem14()
+    new EulerProblem14(),
+    new EulerProblem15()
   ];
 }

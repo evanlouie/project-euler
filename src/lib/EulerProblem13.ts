@@ -220,7 +220,10 @@ Work out the first ten digits of the sum of the following one-hundred 50-digit n
       }, 0);
 
     // remove decimal place and 'e'
-    const sumAsString = sum.toString().split(/\D/).join("");
+    const sumAsString = sum
+      .toString()
+      .split(/\D/)
+      .join("");
     // we can grab the first 10 as the exponent occurs at 15th place
     const first10 = sumAsString.slice(0, 10);
     return first10;

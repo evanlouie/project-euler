@@ -1,40 +1,17 @@
 {
-    "compilerOptions": {
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "forceConsistentCasingInFileNames": true,
-        "jsx": "react",
-        "module": "commonjs", // for node require()
-        // "module": "es6",
-        "moduleResolution": "node",
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "outDir": "./dist/",
-        "strictNullChecks": true,
-        "target": "es6"
-    },
-    "exclude": [
-        "dist",
-        "node_modules"
-    ],
-    // atom-typescript: https://github.com/TypeStrong/atom-typescript/blob/master/docs/tsconfig.md
-    "formatCodeOptions": {
-        "indentSize": 4,
-        "tabSize": 4,
-        "newLineCharacter": "\r\n",
-        "convertTabsToSpaces": true,
-        "insertSpaceAfterCommaDelimiter": true,
-        "insertSpaceAfterSemicolonInForStatements": true,
-        "insertSpaceBeforeAndAfterBinaryOperators": true,
-        "insertSpaceAfterKeywordsInControlFlowStatements": true,
-        "insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
-        "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
-        "placeOpenBraceOnNewLineForFunctions": false,
-        "placeOpenBraceOnNewLineForControlBlocks": false
-    },
-    "buildOnSave": false,
-    "atom": {
-        "formatOnSave": true
-    }
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "outDir": "./dist/",
+    "strictNullChecks": true,
+    "target": "esnext"
+  },
+  "exclude": ["dist", "node_modules"]
 }

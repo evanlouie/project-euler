@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p --progress",
-    "watch": "webpack -d --progress --watch"
+    "dev": "webpack-dev-server",
+    "format": "prettier --print-width 120 --write 'src/**/*.{ts,js}'"
   },
   "repository": {
     "type": "git",
@@ -32,13 +33,13 @@
   "homepage": "https://github.com/evanlouie/project-euler#readme",
   "dependencies": {
     "babel-polyfill": "^6.23.0",
-    "material-ui": "^0.18.7",
+    "material-ui": "^0.19.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-tap-event-plugin": "^2.0.1"
   },
   "devDependencies": {
-    "@types/material-ui": "^0.17.19",
+    "@types/material-ui": "^0.18.0",
     "@types/node": "^8.0.19",
     "@types/react": "^16.0.0",
     "@types/react-dom": "^15.5.1",
@@ -47,11 +48,13 @@
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-assign": "^6.22.0",
     "babel-preset-latest": "^6.24.1",
+    "prettier": "^1.6.1",
     "source-map-loader": "^0.2.1",
     "ts-loader": "^2.3.2",
     "tslint": "^5.5.0",
     "tslint-loader": "^3.5.3",
     "typescript": "^2.4.2",
-    "webpack": "^3.4.1"
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.7.1"
   }
 }

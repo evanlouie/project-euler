@@ -11,7 +11,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".jsx"]
   },
   module: {
-    loaders: [
+    rules: [
       // All .ts(x) files will be piped through ts-loader then babel
       {
         test: /\.tsx?$/,

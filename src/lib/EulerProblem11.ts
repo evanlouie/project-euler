@@ -112,16 +112,13 @@ What is the greatest product of four adjacent numbers in the same direction (up,
       });
 
     const verticalFours: number[][][] = columns.map(column => {
-      return column.reduce(
-        (fours: number[][], value: number, index: number) => {
-          if (column[index + 3] !== undefined) {
-            // use + 4, slice doesn't include end
-            fours.push(column.slice(index, index + 4));
-          }
-          return fours;
-        },
-        []
-      );
+      return column.reduce((fours: number[][], value: number, index: number) => {
+        if (column[index + 3] !== undefined) {
+          // use + 4, slice doesn't include end
+          fours.push(column.slice(index, index + 4));
+        }
+        return fours;
+      }, []);
     });
 
     const verticalProducts: number[] = verticalFours

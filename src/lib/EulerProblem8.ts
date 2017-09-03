@@ -62,42 +62,26 @@ Find the thirteen adjacent digits in the 1000-digit number that have the greates
         // convert all strings to numbers
         return Number(char);
       })
-      .reduce(
-        (
-          carry: number[][],
-          current: number,
-          index: number,
-          array: number[]
-        ) => {
-          // Create array of 13 number arrays
-          if (array.length > index + 13) {
-            const thirteenNums = array.slice(index, index + 13);
-            carry.push(thirteenNums);
-          }
-          return carry;
-        },
-        []
-      )
+      .reduce((carry: number[][], current: number, index: number, array: number[]) => {
+        // Create array of 13 number arrays
+        if (array.length > index + 13) {
+          const thirteenNums = array.slice(index, index + 13);
+          carry.push(thirteenNums);
+        }
+        return carry;
+      }, [])
       .filter((thirteenNums: number[]) => {
         // Only keep arrays that don't have 0's
         return thirteenNums.indexOf(0) <= -1;
       })
-      .reduce(
-        (
-          carry: number[],
-          current: number[],
-          index: number,
-          array: number[][]
-        ) => {
-          // reduce 13 nums to product
-          const product = current.reduce((prod, num) => {
-            return prod * num;
-          }, 1);
-          carry.push(product);
-          return carry;
-        },
-        []
-      )
+      .reduce((carry: number[], current: number[], index: number, array: number[][]) => {
+        // reduce 13 nums to product
+        const product = current.reduce((prod, num) => {
+          return prod * num;
+        }, 1);
+        carry.push(product);
+        return carry;
+      }, [])
       .sort((a, b) => b - a);
 
     answer = products[0];
