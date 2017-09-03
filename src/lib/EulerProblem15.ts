@@ -16,7 +16,7 @@ How many such routes are there through a 20×20 grid?`;
         return numRoutes[sizeX][sizeY];
       }
 
-      if (sizeX == 0 || sizeY == 0) {
+      if (sizeX === 0 || sizeY === 0) {
         return 1;
       }
 
