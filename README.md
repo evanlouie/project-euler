@@ -20,9 +20,7 @@ Then visit your localhost for index.html
 
 ```bash
 npm install
-npm run build
-npm install http-server -g
-http-server
+npm run dev
 ```
 
 visit `localhost:8080`
