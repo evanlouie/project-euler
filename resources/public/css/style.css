@@ -1,0 +1,13 @@
+/* some style */
+
+body {
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+

@@ -1,26 +1,39 @@
-# Project Euler
+# project-euler
 
-> My solutions for <https://projecteuler.net/>.
+FIXME: Write a one-line description of your library/project.
 
-Hosted on: <https://www.evanlouie.com/project-euler/>
+## Overview
 
-## Installing Locally
+FIXME: Write a paragraph about the library/project and highlight its goals.
 
+## Setup
 
-### Cloned into an existing exposed local server (Apache/Nginx)
+To get an interactive development environment run:
 
-```bash
-npm install
-npm run build
-```
+    lein figwheel
 
-Then visit your localhost for index.html
+and open your browser at [localhost:3449](http://localhost:3449/).
+This will auto compile and send all changes to the browser without the
+need to reload. After the compilation process is complete, you will
+get a Browser Connected REPL. An easy way to try it is:
 
-### No local server
+    (js/alert "Am I connected?")
 
-```bash
-npm install
-npm run dev
-```
+and you should see an alert in the browser window.
 
-visit `localhost:8080`
+To clean all compiled files:
+
+    lein clean
+
+To create a production build run:
+
+    lein do clean, cljsbuild once min
+
+And open your browser in `resources/public/index.html`. You will not
+get live reloading, nor a REPL. 
+
+## License
+
+Copyright © 2014 FIXME
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
