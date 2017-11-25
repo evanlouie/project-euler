@@ -20,13 +20,12 @@
   1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
   By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms."
   []
-  (letfn
-   [(fib
-      ([n] (fib n 0 1))
-      ([n x y] (condp = n
-                 0 x
-                 1 y
-                 (fib (- n 1) y (+ x y)))))]
+  (letfn [(fib
+            ([n] (fib n 0 1))
+            ([n x y] (condp = n
+                       0 x
+                       1 y
+                       (recur (- n 1) y (+ x y)))))]
     (->> (for [x (range)
                :let [fibn (fib x)]
                :when (even? fibn)
@@ -66,10 +65,10 @@
   "2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
   What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?"
   []
-  (letfn [(divisible_by?
-            ([divisor n] (every?
-                          zero?
-                          (map (partial mod n) (range 1 divisor)))))]
+  (let [divisible_by? (memoize
+                       (fn  [divisor n] (every?
+                                         zero?
+                                         (map (partial mod n) (range 1 divisor)))))]
     (->> (for [x (iterate (partial + 20) 20)
                :when (divisible_by? 20 x)]
            x)
@@ -278,3 +277,4 @@
 ;;     (letfn [(factors
 ;;               ([n] (recur n n ))
 ;;               ([n max factors] ()))])))
+

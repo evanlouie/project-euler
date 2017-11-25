@@ -1,7 +1,6 @@
 (ns project-euler.core
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent :refer [atom]]
-            [cljs.nodejs]
             [clojure.string]
             [cljs.pprint :as pprint]
             [euler.problems :as problems]
