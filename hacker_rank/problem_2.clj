@@ -1,4 +1,4 @@
- bb (ns hacker-rank.problem-2)
+(ns hacker-rank.problem-2)
 
 (use '[clojure.string :only (split triml)])
 
