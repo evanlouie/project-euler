@@ -1,5 +1,9 @@
 /* some style */
 
+html {
+    padding: 1em;
+}
+
 body {
     font-family: sans-serif;
     max-width: 900px;
