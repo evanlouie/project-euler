@@ -40,7 +40,7 @@
             (true? @working?) "Working..."
             :else "Answer")]
          [:code ":" @answer-value]]
-        [:div 
+        [:div
          [:button
           {:on-click #(do
                         (if (nil? @code)
@@ -52,8 +52,7 @@
             "Show Code"
             "Hide Code")]
          [:pre @code]
-         [:code (apply str @log)]]]
-       ])))
+         [:code (apply str @log)]]]])))
 
 (defn euler []
   [:div.questions
