@@ -11,6 +11,19 @@ body {
     margin: 0 auto;
 }
 
+.questions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 -1em;
+}
+
+.question {
+    flex: 1 1 400px;
+    margin: 0 1em;
+    border-bottom: 1px solid #f2f2f0;
+}
+
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;

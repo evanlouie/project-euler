@@ -24,10 +24,10 @@
         code (reagent/atom nil)
         log (reagent/atom [])]
     (fn []
-      [:div.euler-problem
-       [:h2 {:style {:margin-bottom 0}} short-name]
-       [:a {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank} [:h3 {:style {:margin-top 0}} (str "Problem " problem-number)]]
-       [:pre {:style {:font-family :serif}} question]
+      [:div.euler-problem.question
+       [:h2 {:style {:margin-bottom 0 :color :#333}} short-name]
+       [:a {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank} [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]
+       [:pre {:style {:font-family :serif :color :#666}} question]
        [:button {:disabled @working?
                  :on-click #(do
                               (reset! working? true)
@@ -50,10 +50,10 @@
           "Hide Code")]
        [:pre @code]
        [:code (apply str @log)]
-       [:hr]])))
+       ])))
 
 (defn euler []
-  [:div.app
+  [:div.questions
    [euler-problem
     1
     "Multiples of 3 and 5"
