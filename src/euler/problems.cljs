@@ -317,3 +317,19 @@
            (reduce add-list-columns)
            (reverse)
            (take 10)))))
+
+(defn problem-14
+  []
+  (letfn [(collatz
+            ([n] (collatz n []))
+            ([n sequence] (cond
+                            (= 1 n) (conj sequence 1)
+                            (even? n) (recur (/ n 2) (conj sequence n))
+                            (odd? n) (recur (+ (* 3 n) 1) (conj sequence n)))))]
+    (->> (iterate inc 1)
+         (map (fn [n] (let [seq (collatz n)]
+                        (do
+                          (println n ":" (count seq))
+                          seq))))
+         (sort-by count)
+         (last))))

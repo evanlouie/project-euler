@@ -41,12 +41,14 @@
                ;; This next build is a compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
-               {:id "min"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/project_euler.js"
-                           :main project-euler.core
-                           :optimizations :advanced
-                           :pretty-print false}}
+               ;; {:id "min"
+               ;;  :source-paths ["src"]
+               ;;  :compiler {:output-to "resources/public/js/compiled/project_euler.js"
+               ;;             :main project-euler.core
+               ;;             :optimizations :advanced
+               ;;             :pretty-print false}}
+               ;; This build is capable of self-hosting
+               ;; https://clojurescript.org/guides/self-hosting
                {:id "complex"
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/project_euler.js"
