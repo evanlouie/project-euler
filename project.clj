@@ -4,8 +4,6 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  
-  
   :min-lein-version "2.7.1"
 
   :dependencies [[org.clojure/clojure "1.9.0-beta4"]
@@ -48,7 +46,15 @@
                 :compiler {:output-to "resources/public/js/compiled/project_euler.js"
                            :main project-euler.core
                            :optimizations :advanced
-                           :pretty-print false}}]}
+                           :pretty-print false}}
+               {:id "complex"
+                :source-paths ["src"]
+                :compiler {:output-to "resources/public/js/compiled/project_euler.js"
+                           :main project-euler.core
+                           :optimizations :simple
+                           :pretty-print false
+                           :optimize-constants true
+                           :static-fns true}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
@@ -87,10 +93,7 @@
 
              ;; to pipe all the output to the repl
              ;; :server-logfile false
-             }
-
-
-  ;; Setting up nREPL for Figwheel and ClojureScript dev
+};; Setting up nREPL for Figwheel and ClojureScript dev
   ;; Please see:
   ;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.4"]
