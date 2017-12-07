@@ -25,31 +25,34 @@
         log (reagent/atom [])]
     (fn []
       [:div.euler-problem.question
-       [:h2 {:style {:margin-bottom 0 :color :#333}} short-name]
-       [:a {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank} [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]
-       [:pre {:style {:font-family :serif :color :#666}} question]
-       [:button {:disabled @working?
-                 :on-click #(do
-                              (reset! working? true)
-                              (reset! answer-value (answer))
-                              (reset! working? false))}
-        (cond
-          (true? @working?) "Working..."
-          :else "Answer")]
-       [:code ":" @answer-value]
-       [:br]
-       [:button
-        {:on-click #(do
-                      (if (nil? @code)
-                        (reset! code
-                                (str answer))
-                        (reset! code nil)))}
+       [:div.meta
+        [:h2 {:style {:margin-bottom 0}} short-name]
+        [:a {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank} [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
+       [:pre.question-text {:style {:font-family :serif :color :#666}} question]
+       [:div.controls
+        [:div
+         [:button {:disabled @working?
+                   :on-click #(do
+                                (reset! working? true)
+                                (reset! answer-value (answer))
+                                (reset! working? false))}
+          (cond
+            (true? @working?) "Working..."
+            :else "Answer")]
+         [:code ":" @answer-value]]
+        [:div 
+         [:button
+          {:on-click #(do
+                        (if (nil? @code)
+                          (reset! code
+                                  (str answer))
+                          (reset! code nil)))}
 
-        (if (nil? @code)
-          "Show Code"
-          "Hide Code")]
-       [:pre @code]
-       [:code (apply str @log)]
+          (if (nil? @code)
+            "Show Code"
+            "Hide Code")]
+         [:pre @code]
+         [:code (apply str @log)]]]
        ])))
 
 (defn euler []
