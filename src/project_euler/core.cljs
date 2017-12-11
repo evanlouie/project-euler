@@ -25,7 +25,7 @@
         log (reagent/atom [])]
     (fn []
       [:div.euler-problem.question
-       {:style {:overflow :auto :flex "1 1 400px" :margin "0 1em" :border-bottom "1px solid #f2f2f0"}}
+       {:style {:flex "1 1 400px" :margin "0 1em" :border-bottom "1px solid #f2f2f0"}}
        [:div.meta
         [:h2
          {:style {:margin-bottom 0}}
