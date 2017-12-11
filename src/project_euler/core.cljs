@@ -25,10 +25,17 @@
         log (reagent/atom [])]
     (fn []
       [:div.euler-problem.question
+       {:style {:overflow :auto :flex "1 1 400px" :margin "0 1em" :border-bottom "1px solid #f2f2f0"}}
        [:div.meta
-        [:h2 {:style {:margin-bottom 0}} short-name]
-        [:a {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank} [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
-       [:pre.question-text {:style {:font-family :serif :color :#666}} question]
+        [:h2
+         {:style {:margin-bottom 0}}
+         short-name]
+        [:a
+         {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank}
+         [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
+       [:pre.question-text
+        {:style {:font-family :serif :color :#666 :white-space :pre-wrap :word-wrap :break-word}}
+        question]
        [:div.controls
         [:div
          [:button {:disabled @working?
@@ -51,11 +58,14 @@
           (if (nil? @code)
             "Show Code"
             "Hide Code")]
-         [:pre @code]
+         [:pre
+          {:style {:whites-space :pre-wrap :word-wrap :break-word}}
+          @code]
          [:code (apply str @log)]]]])))
 
 (defn euler []
   [:div.questions
+   {:style {:display :flex :flex-wrap :wrap :justify-content :space-between :margin "0 -1em"}}
    [euler-problem
     1
     "Multiples of 3 and 5"

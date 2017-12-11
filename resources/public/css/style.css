@@ -12,30 +12,3 @@ body {
     max-width: 900px;
     margin: 0 auto;
 }
-
-.questions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 0 -1em;
-}
-
-.question {
-    overflow: auto;
-    flex: 1 1 400px;
-    margin: 0 1em;
-    border-bottom: 1px solid #f2f2f0;
-
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* justify-content: space-between; */
-}
-
-.question-text {
-    /* flex: 1 1 auto; */
-}
-
-pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
