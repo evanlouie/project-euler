@@ -34,7 +34,7 @@
          {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank}
          [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
        [:pre.question-text
-        {:style {:font-family :serif :color :#666 :white-space :pre-wrap :word-wrap :break-word}}
+        {:style {:font-family :serif :color :#666 :white-space :pre-wrap :word-wrap :break-word :overflow :hidden}}
         question]
        [:div.controls
         [:div
@@ -59,7 +59,7 @@
             "Show Code"
             "Hide Code")]
          [:pre
-          {:style {:white-space :pre-wrap :word-wrap :break-word}}
+          {:style {:white-space :pre-wrap :word-wrap :break-word :overflow :hidden}}
           @code]
          [:code (apply str @log)]]]])))
 
