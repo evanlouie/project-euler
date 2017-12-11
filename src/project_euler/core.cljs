@@ -59,7 +59,7 @@
             "Show Code"
             "Hide Code")]
          [:pre
-          {:style {:whites-space :pre-wrap :word-wrap :break-word}}
+          {:style {:white-space :pre-wrap :word-wrap :break-word}}
           @code]
          [:code (apply str @log)]]]])))
 
