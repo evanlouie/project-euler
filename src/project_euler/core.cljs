@@ -41,7 +41,7 @@
          [:button {:disabled @working?
                    :on-click #(do
                                 (reset! working? true)
-                                (reset! answer-value (answer))
+                                (reset! answer-value (time (answer)))
                                 (reset! working? false))}
           (cond
             (true? @working?) "Working..."

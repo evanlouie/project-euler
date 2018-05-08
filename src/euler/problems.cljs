@@ -9,6 +9,7 @@
   "If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
   Find the sum of all the multiples of 3 or 5 below 1000."
   []
+
   (->> (for [x (range 1000)
              :when (or (zero? (mod x 3))
                        (zero? (mod x 5)))]
@@ -65,25 +66,12 @@
   "2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
   What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?"
   []
-  (let [factors (fn [n] (into (sorted-set)
-                              (reduce concat
-                                      (for [x (range 1 (inc (Math/sqrt n)))
-                                            :when (zero? (rem n x))]
-                                        [x (/ n x)]))))
-        prime? (memoize (fn [n] (zero? (count (factors n)))))
-        primes (for [x (range)
-                     :when (prime?)]
-                 x)
-        set-upto (memoize (fn [n] (into (sorted-set)
-                                        (range 1 (inc n)))))
-        divisible_upto? (fn  [divisor n] (do
-                                           (every?
-                                            (partial contains? (factors n))
-                                            (set-upto divisor))))]
-    (->> (iterate (partial + 20) 20)
-         (map (fn [n] (do (println n) n)))
-         (filter (partial divisible_upto? 20))
-         (first))))
+  (let [divisors (range 19 10 -1)]
+    (->> (for [n (iterate (partial + 20) 20)
+              :when (do (if (zero? (rem n 100000)) (println n) nil)
+                        (every? zero? (map #(rem n %) divisors)))]
+          n)
+        (first))))
 
 (defn problem-6
   "The sum of the squares of the first ten natural numbers is,
