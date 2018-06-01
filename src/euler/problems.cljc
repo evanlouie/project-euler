@@ -154,14 +154,15 @@
                     a-squared (Math/pow a 2)
                     b-squared (Math/pow b 2)]
               :when (and
-                     (and (> c b) (> b a))
-                     (= (+ a-squared b-squared)
-                        c-squared))]
+                     (> c b)
+                     (> b a)
+                     (= (float (int c)) c)
+                     (= (+ a-squared b-squared) c-squared))]
           (do
             (println triplet)
             triplet))]
     (->> triplets
-         (filter (fn [list] (= 1000 (reduce + list))))
+         (filter (fn [list] (= 1000.0 (reduce + list))))
          (first)
          (reduce *))))
 
