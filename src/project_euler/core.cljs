@@ -1,12 +1,22 @@
 (ns project-euler.core
-  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent :refer [atom]]
-            [clojure.string]
             [cljs.pprint :as pprint]
             [euler.problems :as problems]
-            [clojure.core.async :as async :refer [chan close! >! <! alts!]]))
+            [clojure.core.async :as async :refer [go chan close! >! <! alts!]]))
 
 (enable-console-print!)
+
+(defn fetch
+  [url callback]
+  (-> (.fetch js/window url)
+      (.then #(.text %))
+      (.then #(callback %))))
+
+(defn work []
+  (let [c (chan)]
+    (do
+      (fetch "/" #(go (>! c %)))
+      c)))
 
 ;; define your app data so that it doesn't get over-written on reload
 (defonce app-state (atom {:text "Hello world!"}))

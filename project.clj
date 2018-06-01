@@ -49,14 +49,15 @@
                            :pretty-print false}}
                ;; This build is capable of self-hosting
                ;; https://clojurescript.org/guides/self-hosting
-               {:id "complex"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/project_euler.js"
-                           :main project-euler.core
-                           :optimizations :simple
-                           :pretty-print false
-                           :optimize-constants true
-                           :static-fns true}}]}
+               ;; {:id "complex"
+               ;;  :source-paths ["src"]
+               ;;  :compiler {:output-to "resources/public/js/compiled/project_euler.js"
+               ;;             :main project-euler.core
+               ;;             :optimizations :simple
+               ;;             :pretty-print false
+               ;;             :optimize-constants true
+               ;;             :static-fns true}}
+               ]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default

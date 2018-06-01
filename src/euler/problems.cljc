@@ -1,6 +1,4 @@
-(ns euler.problems
-  (:require
-   [clojure.string]))
+(ns euler.problems)
 
 ;; (defn log [something] (cljs.pprint/pprint something))
 ;; (defn log-string [something] (with-out-str (log something)))
@@ -68,10 +66,10 @@
   []
   (let [divisors (range 19 10 -1)]
     (->> (for [n (iterate (partial + 20) 20)
-              :when (do (if (zero? (rem n 100000)) (println n) nil)
-                        (every? zero? (map #(rem n %) divisors)))]
-          n)
-        (first))))
+               :when (do (if (zero? (rem n 100000)) (println n) nil)
+                         (every? zero? (map #(rem n %) divisors)))]
+           n)
+         (first))))
 
 (defn problem-6
   "The sum of the squares of the first ten natural numbers is,
@@ -309,15 +307,20 @@
 (defn problem-14
   []
   (letfn [(collatz
-            ([n] (collatz n []))
-            ([n sequence] (cond
-                            (= 1 n) (conj sequence 1)
-                            (even? n) (recur (/ n 2) (conj sequence n))
-                            (odd? n) (recur (+ (* 3 n) 1) (conj sequence n)))))]
-    (->> (iterate inc 1)
-         (map (fn [n] (let [seq (collatz n)]
-                        (do
-                          (println n ":" (count seq))
-                          seq))))
-         (sort-by count)
-         (last))))
+            ([n]
+             (collatz n (transient [])))
+            ([n t]
+             (cond
+               (= 1 n) (do (conj! t 1)
+                           (persistent! t))
+               (even? n) (recur (/ n 2) (conj! t n))
+               (odd? n) (recur (+ (* 3 n) 1) (conj! t n)))))]
+    (:key (->> (iterate inc 1)
+               (map (fn [i] (do (if (zero?
+                                     (rem i 10000))
+                                  (do (println i))
+                                  i)
+                                i)))
+               (map (fn [n] {:key n :count (count (collatz n))}))
+               (take 1000000)
+               (apply max-key :count)))))
