@@ -10,7 +10,8 @@
   [url callback]
   (-> (.fetch js/window url)
       (.then #(.text %))
-      (.then #(callback %))))
+      (.then #(callback %))
+      (.catch fn [err] (js/console.error err))))
 
 (defn work []
   (let [c (chan)]
