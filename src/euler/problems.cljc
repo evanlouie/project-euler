@@ -1,4 +1,5 @@
-(ns euler.problems)
+(ns euler.problems
+  #?(:cljs (:require [cljs.reader :refer [read-string]])))
 
 ;; (defn log [something] (cljs.pprint/pprint something))
 ;; (defn log-string [something] (with-out-str (log something)))
@@ -324,13 +325,14 @@
                            (persistent! t))
                (even? n) (recur (/ n 2) (conj! t n))
                (odd? n) (recur (inc (* 3 n)) (conj! t n)))))]
-    (:key (->> (for [n (iterate inc 1)
-                     :let [c (collatz n)]
-                     :while (<= n 1000000)]
-                 {:key n :count (count c)})
-               (map (fn [x] (let [n (:key x)]
-                              (do (if (zero? (rem n 10000))
-                                    (println n)
-                                    n)
-                                  x))))
-               (apply max-key :count)))))
+    (->> (for [n (iterate inc 1)
+               :let [c (collatz n)]
+               :while (<= n 1000000)]
+           {:key n :count (count c)})
+         (map (fn [x] (let [n (:key x)]
+                        (do (if (zero? (rem n 10000))
+                              (println n)
+                              n)
+                            x))))
+         (apply max-key :count)
+         (:key))))

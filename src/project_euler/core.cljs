@@ -11,7 +11,7 @@
   (-> (.fetch js/window url)
       (.then #(.text %))
       (.then #(callback %))
-      (.catch fn [err] (js/console.error err))))
+      (.catch (fn [err] (js/console.error err)))))
 
 (defn work []
   (let [c (chan)]
