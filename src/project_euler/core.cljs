@@ -38,7 +38,7 @@
     (fn []
       (let [max-question-lines 20
             should-truncate-question (> (count (clojure.string/split-lines question)) max-question-lines)]
-        [:div.euler-problem.question
+        [:div.euler_problem.question
          {:style {:overflow :hidden
                   :flex "1 1 400px"
                   :margin "0 1em"
