@@ -33,46 +33,65 @@
   (let [answer-value (reagent/atom nil)
         working? (reagent/atom false)
         code (reagent/atom nil)
-        log (reagent/atom [])]
+        log (reagent/atom [])
+        expanded (reagent/atom false)]
     (fn []
-      [:div.euler-problem.question
-       {:style {:overflow :hidden :flex "1 1 400px" :margin "0 1em" :border-bottom "1px solid #f2f2f0"}}
-       [:div.meta
-        [:h2
-         {:style {:margin-bottom 0}}
-         short-name]
-        [:a
-         {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank}
-         [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
-       [:pre.question-text
-        {:style {:font-family :serif :color :#666 :white-space :pre-wrap :word-wrap :break-word :overflow :hidden}}
-        question]
-       [:div.controls
-        [:div
-         [:button {:disabled @working?
-                   :on-click #(do
-                                (reset! working? true)
-                                (reset! answer-value (time (answer)))
-                                (reset! working? false))}
-          (cond
-            (true? @working?) "Working..."
-            :else "Answer")]
-         [:code ":" @answer-value]]
-        [:div
-         [:button
-          {:on-click #(do
-                        (if (nil? @code)
-                          (reset! code
-                                  (str answer))
-                          (reset! code nil)))}
+      (let [max-question-lines 20
+            should-truncate-question (> (count (clojure.string/split-lines question)) max-question-lines)]
+        [:div.euler-problem.question
+         {:style {:overflow :hidden
+                  :flex "1 1 400px"
+                  :margin "0 1em"
+                  :border-bottom "1px solid #f2f2f0"}}
+         [:div.meta
+          [:h2
+           {:style {:margin-bottom 0}}
+           short-name]
+          [:a
+           {:href (str "https://projecteuler.net/problem=" problem-number) :target :_blank}
+           [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
+         [:pre.question_text
+          {:style {:font-family :serif
+                   :color :#666
+                   :white-space :pre-wrap
+                   :word-wrap :break-word
+                   :overflow :hidden
+                   :max-height (if @expanded "100%" "20em")}}
+          question]
+         [:pre.question_text--truncated
+          (when (and (not @expanded)
+                     should-truncate-question) "(question truncated...)")]
+         [:div.controls
+          (comment [:div
+                    [:button
+                     {:on-click #(do
+                                   (if (nil? @code)
+                                     (reset! code (str answer))
+                                     (reset! code nil)))}
 
-          (if (nil? @code)
-            "Show Code"
-            "Hide Code")]
-         [:pre
-          {:style {:white-space :pre-wrap :word-wrap :break-word :overflow :hidden}}
-          @code]
-         [:code (apply str @log)]]]])))
+                     (if (nil? @code)
+                       "Show Code"
+                       "Hide Code")]
+                    [:pre
+                     {:style {:white-space :pre-wrap
+                              :word-wrap :break-word
+                              :overflow :hidden}}
+                     @code]
+                    [:code (apply str @log)]])
+          (when should-truncate-question
+            [:div
+             [:button {:on-click #(do (reset! expanded (not @expanded)))}
+              (if @expanded "Collapse" "Expand")]])
+          [:div
+           [:button {:disabled @working?
+                     :on-click #(do
+                                  (reset! working? true)
+                                  (reset! answer-value (time (answer)))
+                                  (reset! working? false))}
+            (cond
+              (true? @working?) "Working..."
+              :else "Answer")]
+           [:code ":" @answer-value]]]]))))
 
 (defn euler []
   [:div.questions
