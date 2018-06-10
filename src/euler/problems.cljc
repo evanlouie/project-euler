@@ -1,6 +1,6 @@
 (ns euler.problems
-  ;; #?(:cljs (:require [cljs.reader :refer [read-string]]))
-)
+  #?(:clj (:require [clojure.core.match :refer [match]])
+     :cljs (:require [cljs.core.match :refer-macros [match]])))
 
 ;; (defn log [something] (cljs.pprint/pprint something))
 ;; (defn log-string [something] (with-out-str (log something)))
@@ -9,7 +9,6 @@
   "If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
   Find the sum of all the multiples of 3 or 5 below 1000."
   []
-
   (->> (for [x (range 1000)
              :when (or (zero? (mod x 3))
                        (zero? (mod x 5)))]
@@ -23,10 +22,10 @@
   []
   (letfn [(fib
             ([n] (fib n 0 1))
-            ([n x y] (condp = n
-                       0 x
-                       1 y
-                       (recur (- n 1) y (+ x y)))))]
+            ([n x y] (match [n]
+                       [0] x
+                       [1] y
+                       [_] (recur (dec n) y (+ x y)))))]
     (->> (for [x (range)
                :let [fibn (fib x)]
                :when (even? fibn)
@@ -43,10 +42,10 @@
       (zero? (mod n div)))
     (prime-factors
      ([n]
-      (prime-factors n 2 '()))
+      (prime-factors n 2 (transient [])))
      ([n candidate acc]
-      (cond (<= n 1) (reverse acc)
-            (multiple? n candidate) (recur (/ n candidate) candidate (cons candidate acc))
+      (cond (<= n 1) (reverse (persistent! acc))
+            (multiple? n candidate) (recur (/ n candidate) candidate (conj! acc candidate))
             :else (recur n (inc candidate) acc))))]
     (apply max (prime-factors 600851475143))))
 
@@ -70,8 +69,8 @@
   []
   (let [divisors (range 19 10 -1)]
     (->> (for [n (iterate (partial + 20) 20)
-               :when (do (if (zero? (rem n 100000)) (println n) nil)
-                         (every? zero? (map #(rem n %) divisors)))]
+               :when (do (when (zero? (rem n 10000000)) (println n))
+                         (every? zero? (map (fn [divisor] (rem n divisor)) divisors)))]
            n)
          (first))))
 
@@ -160,9 +159,9 @@
                     a-squared (Math/pow a 2)
                     b-squared (Math/pow b 2)]
               :when (and
+                     (= (float (int c)) c)
                      (> c b)
                      (> b a)
-                     (= (float (int c)) c)
                      (= (+ a-squared b-squared) c-squared))]
           (do
             (println triplet)
@@ -316,19 +315,17 @@
             ([n]
              (collatz n (transient [])))
             ([n t]
-             (cond
-               (= 1 n) (do (conj! t 1)
-                           (persistent! t))
-               (even? n) (recur (/ n 2) (conj! t n))
-               (odd? n) (recur (inc (* 3 n)) (conj! t n)))))]
+             (cond (= 1 n) (do (conj! t 1)
+                               (persistent! t))
+                   (even? n) (recur (/ n 2) (conj! t n))
+                   (odd? n) (recur (inc (* 3 n)) (conj! t n)))))]
     (->> (for [n (iterate inc 1)
                :let [c (collatz n)]
                :while (<= n 1000000)]
            {:key n :count (count c)})
          (map (fn [x] (let [n (:key x)]
-                        (do (if (zero? (rem n 10000))
-                              (println n)
-                              n)
+                        (do (when (zero? (rem n 10000))
+                              (println n))
                             x))))
          (apply max-key :count)
          (:key))))
