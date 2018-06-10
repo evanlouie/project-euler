@@ -277,7 +277,7 @@
                    (let [factor-list (factors triangle-number)
                          list-length (reduce (fn [count n] (inc count)) 0 factor-list)]
                      (do
-                       (println triangle-number ":" list-length)
+                       (when (zero? list-length) (println triangle-number ":" list-length))
                        (< 500 list-length)))))
          (first))))
 
@@ -290,8 +290,11 @@
     (letfn [(add-list-columns
               ([x y] (add-list-columns x y 0 '()))
               ([x y carry sum]
+               (match [x y]
+                 [([nil] :seq) ([nil] :seq)] (reverse (if (zero? carry) sum (conj sum carry))))
                (cond
-                 (and (nil? (first x)) (nil? (first y))) (reverse (if (zero? carry) sum (conj sum carry)))
+                 (and (nil? (first x))
+                      (nil? (first y))) (reverse (if (zero? carry) sum (conj sum carry)))
                  :else (let [x-curr (if (< 0 (count x)) (first x) 0)
                              y-curr (if (< 0 (count y)) (first y) 0)
                              x-rest (rest x)
@@ -310,6 +313,19 @@
            (clojure.string/join)))))
 
 (defn problem-14
+  "The following iterative sequence is defined for the set of positive integers:
+
+  n → n/2 (n is even)
+  n → 3n + 1 (n is odd)
+
+  Using the rule above and starting with 13, we generate the following sequence:
+
+  13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+  It can be seen that this sequence (starting at 13 and finishing at 1) contains 10 terms. Although it has not been proved yet (Collatz Problem), it is thought that all starting numbers finish at 1.
+
+  Which starting number, under one million, produces the longest chain?
+
+  NOTE: Once the chain starts the terms are allowed to go above one million."
   []
   (letfn [(collatz
             ([n]
@@ -323,9 +339,10 @@
                :let [c (collatz n)]
                :while (<= n 1000000)]
            {:key n :count (count c)})
-         (map (fn [x] (let [n (:key x)]
+         (map (fn [x] (let [n (:key x)
+                            c (:count x)]
                         (do (when (zero? (rem n 10000))
-                              (println n))
+                              (println (str "[" n "]:" c)))
                             x))))
          (apply max-key :count)
          (:key))))
