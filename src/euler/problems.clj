@@ -1,18 +1,15 @@
 (ns euler.problems
-  #?(:clj (:require [clojure.core.match :refer [match]])
-     :cljs (:require [cljs.core.match :refer-macros [match]])))
-
-;; (defn log [something] (cljs.pprint/pprint something))
-;; (defn log-string [something] (with-out-str (log something)))
+  (:require [clojure.core.match :refer [match]]))
 
 (defn problem-1
   "If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
   Find the sum of all the multiples of 3 or 5 below 1000."
   []
-  (->> (for [x (range 1000)
-             :when (or (zero? (mod x 3))
-                       (zero? (mod x 5)))]
-         x)
+  (->> (for [natural (range)
+             :when (or (zero? (mod natural 3))
+                       (zero? (mod natural 5)))
+             :while (<= natural 1000)]
+         natural)
        (reduce +)))
 
 (defn problem-2
@@ -20,18 +17,28 @@
   1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
   By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms."
   []
-  (letfn [(fib
-            ([n] (fib n 0 1))
-            ([n x y] (match [n]
-                       [0] x
-                       [1] y
-                       [_] (recur (dec n) y (+ x y)))))]
-    (->> (for [x (range)
-               :let [fibn (fib x)]
-               :when (even? fibn)
-               :while (< fibn 4000000)]
-           fibn)
-         (reduce +))))
+  ; Recursive solution; slower
+  #_(letfn [(fib
+              ([n] (fib n 0 1))
+              ([n x y] (match [n]
+                         [0] x
+                         [1] y
+                         [_] (recur (dec n) y (+ x y)))))]
+      (->> (for [n (range)
+                 :let [fib-n (fib n)]
+                 :while (> 4000000 fib-n)
+                 :when even?]
+             fib-n)
+           (reduce +)))
+  ; Lazy sequence solution; faster and consumes less memory
+  (letfn [(fibs
+            ([] (fibs 0 1))
+            ([a b] (let [next (+' a b)]
+                     (lazy-seq (cons next (fibs b next))))))]
+    (->> (fibs)
+         (filter even?)
+         (take-while #(<= % 4000000))
+         (reduce +'))))
 
 (defn problem-3
   "The prime factors of 13195 are 5, 7, 13 and 29.
@@ -76,9 +83,9 @@
 
 (defn problem-6
   "The sum of the squares of the first ten natural numbers is,
-  12 + 22 + .j.. + 102 = 385
+  1^2 + 2^2 + .j.. + 10^2 = 385
   The square of the sum of the first ten natural numbers is,
-  (1 + 2 + ... + 10)2 = 552 = 3025
+  (1 + 2 + ... + 10)^2 = 552 = 3025
   Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is 3025 − 385 = 2640.
   Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum."
   []
@@ -97,17 +104,26 @@
   "By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
   What is the 10 001st prime number?"
   []
-  (letfn [(isPrime?
-            ([n] (isPrime? n 2))
-            ([n start] (cond
-                         (> start (Math/sqrt n)) (> n 1)
-                         (< (mod n start) 1) false
-                         :else (recur n (inc start)))))]
-    (->> (for [x (range)
-               :when (isPrime? x)]
-           x)
-         (take 10001)
-         (last))))
+  #_(letfn [(isPrime?
+              ([n] (isPrime? n 2))
+              ([n start] (cond
+                           (> start (Math/sqrt n)) (> n 1)
+                           (< (mod n start) 1) false
+                           :else (recur n (inc start)))))]
+      (->> (range)
+           (filter isPrime?)
+           (take 10001)
+           (last)))
+  (letfn [(primes
+            ([]
+             (lazy-seq (cons 2 (primes 3 [2]))))
+            ([potential prev-primes]
+             (let [divisors (take-while #(<= % (Math/sqrt potential)) prev-primes)]
+               (if (some #(zero? (mod potential %)) divisors)
+                 (lazy-seq (primes (inc potential) prev-primes))
+                 (lazy-seq (cons potential
+                                 (primes (inc potential) (conj prev-primes potential))))))))]
+    (nth (primes) 10001)))
 
 (defn problem-8
   "The four adjacent digits in the 1000-digit number that have the greatest product are 9 × 9 × 8 × 9 = 5832. 73167176531330624919225119674426574742355349194934
@@ -137,7 +153,7 @@
     (->> number-chars
          (partition-all 13 1)
          (pmap (fn [list]
-                 (reduce * (map  #(Integer/parseInt %) list))))
+                 (reduce * (map read-string list))))
          (apply max))))
 
 (defn problem-9
@@ -151,21 +167,20 @@
         (for [a (range 1 1000)
               b (range (inc a) 1000)
               :let [c-squared (+ (Math/pow b 2) (Math/pow a 2))
-                    c (Math/sqrt c-squared)
-                    triplet [a b c]
-                    sum (reduce + [a b c])
+                    c-float (Math/sqrt c-squared)
                     a-squared (Math/pow a 2)
                     b-squared (Math/pow b 2)]
               :when (and
-                     (= (float (int c)) c)
-                     (> c b)
+                     (= (float (int c-float)) c-float)
+                     (> c-float b)
                      (> b a)
                      (= (+ a-squared b-squared) c-squared))]
-          (do
-            (println triplet)
-            triplet))]
+          (let [triplet [a b (int c-float)]]
+            (do
+              (prn triplet)
+              triplet)))]
     (->> triplets
-         (filter (fn [list] (= 1000.0 (reduce + list))))
+         (filter (fn [triple] (= 1000 (reduce + triple))))
          (first)
          (reduce *))))
 
@@ -173,14 +188,26 @@
   "The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
   Find the sum of all the primes below two million."
   []
-  (letfn [(prime?
-            ([n] (prime? n 2))
-            ([n start] (cond
-                         (> start (Math/sqrt n)) (> n 1)
-                         (< (mod n start) 1) false
-                         :else (recur n (inc start)))))]
-    (->> (map inc (range 2000000))
-         (pmap #(if (prime? %) % 0))
+  #_(letfn [(prime?
+              ([n] (prime? n 2))
+              ([n divisor] (cond
+                             (> divisor (Math/sqrt n)) (> n 1)
+                             (< (mod n divisor) 1) false
+                             :else (recur n (inc divisor)))))]
+      (->> (range 1 2000001)
+           (pmap #(if (prime? %) % 0))
+           (reduce +)))
+  (letfn [(primes
+            ([]
+             (lazy-seq (cons 2 (primes 3 [2]))))
+            ([potential prev-primes]
+             (let [divisors (take-while #(<= % (Math/sqrt potential)) prev-primes)]
+               (if (some #(zero? (mod potential %)) divisors)
+                 (lazy-seq (primes (inc potential) prev-primes))
+                 (lazy-seq (cons potential
+                                 (primes (inc potential) (conj prev-primes potential))))))))]
+    (->> (primes)
+         (take-while #(<= % 2000000))
          (reduce +))))
 
 (defn problem-11
@@ -259,61 +286,41 @@
   we can see that 28 is the first triangle number to have over five divisors.
   what is the value of the first triangle number to have over five hundred divisors?"
   []
-  (let [triangle-numbers (->> (range)
-                              (pmap #(reduce + (range 0 %))))
-        factors (fn [n] (into (sorted-set)
-                              (reduce concat
-                                      (for [x (range 1 (inc (Math/sqrt n)))
-                                            :when (zero? (rem n x))]
-                                        [x (/ n x)]))))]
-    (->> triangle-numbers
-         (pmap (fn [tri] {:triangle-number tri :factors (factors tri)}))
-         (filter #(> (count (:factors %)) 500))
+  (letfn [(triangles
+            ([] (triangles 1 0))
+            ([n sum] (let [next-sum (+ sum n)]
+                       (lazy-seq (cons next-sum (triangles (inc n) next-sum))))))
+          (factors
+            ([n] (reduce concat
+                        (for [x (range 1 (inc (Math/sqrt n)))
+                              :when (zero? (rem n x))]
+                          [x (/ n x)]))))]
+    (->> (triangles)
+         (pmap (fn [triangle] {:triangle triangle :factors (factors triangle)}))
+         (filter (fn [{factors :factors}] (> (count factors) 500)))
          (first)
-         (:triangle-number))))
+         (:triangle))))
 
 (defn problem-13
   []
   (let [number-string "37107287533902102798797998220837590246510135740250\n46376937677490009712648124896970078050417018260538\n74324986199524741059474233309513058123726617309629\n91942213363574161572522430563301811072406154908250\n23067588207539346171171980310421047513778063246676\n89261670696623633820136378418383684178734361726757\n28112879812849979408065481931592621691275889832738\n44274228917432520321923589422876796487670272189318\n47451445736001306439091167216856844588711603153276\n70386486105843025439939619828917593665686757934951\n62176457141856560629502157223196586755079324193331\n64906352462741904929101432445813822663347944758178\n92575867718337217661963751590579239728245598838407\n58203565325359399008402633568948830189458628227828\n80181199384826282014278194139940567587151170094390\n35398664372827112653829987240784473053190104293586\n86515506006295864861532075273371959191420517255829\n71693888707715466499115593487603532921714970056938\n54370070576826684624621495650076471787294438377604\n53282654108756828443191190634694037855217779295145\n36123272525000296071075082563815656710885258350721\n45876576172410976447339110607218265236877223636045\n17423706905851860660448207621209813287860733969412\n81142660418086830619328460811191061556940512689692\n51934325451728388641918047049293215058642563049483\n62467221648435076201727918039944693004732956340691\n15732444386908125794514089057706229429197107928209\n55037687525678773091862540744969844508330393682126\n18336384825330154686196124348767681297534375946515\n80386287592878490201521685554828717201219257766954\n78182833757993103614740356856449095527097864797581\n16726320100436897842553539920931837441497806860984\n48403098129077791799088218795327364475675590848030\n87086987551392711854517078544161852424320693150332\n59959406895756536782107074926966537676326235447210\n69793950679652694742597709739166693763042633987085\n41052684708299085211399427365734116182760315001271\n65378607361501080857009149939512557028198746004375\n35829035317434717326932123578154982629742552737307\n94953759765105305946966067683156574377167401875275\n88902802571733229619176668713819931811048770190271\n25267680276078003013678680992525463401061632866526\n36270218540497705585629946580636237993140746255962\n24074486908231174977792365466257246923322810917141\n91430288197103288597806669760892938638285025333403\n34413065578016127815921815005561868836468420090470\n23053081172816430487623791969842487255036638784583\n11487696932154902810424020138335124462181441773470\n63783299490636259666498587618221225225512486764533\n67720186971698544312419572409913959008952310058822\n95548255300263520781532296796249481641953868218774\n76085327132285723110424803456124867697064507995236\n37774242535411291684276865538926205024910326572967\n23701913275725675285653248258265463092207058596522\n29798860272258331913126375147341994889534765745501\n18495701454879288984856827726077713721403798879715\n38298203783031473527721580348144513491373226651381\n34829543829199918180278916522431027392251122869539\n40957953066405232632538044100059654939159879593635\n29746152185502371307642255121183693803580388584903\n41698116222072977186158236678424689157993532961922\n62467957194401269043877107275048102390895523597457\n23189706772547915061505504953922979530901129967519\n86188088225875314529584099251203829009407770775672\n11306739708304724483816533873502340845647058077308\n82959174767140363198008187129011875491310547126581\n97623331044818386269515456334926366572897563400500\n42846280183517070527831839425882145521227251250327\n55121603546981200581762165212827652751691296897789\n32238195734329339946437501907836945765883352399886\n75506164965184775180738168837861091527357929701337\n62177842752192623401942399639168044983993173312731\n32924185707147349566916674687634660915035914677504\n99518671430235219628894890102423325116913619626622\n73267460800591547471830798392868535206946944540724\n76841822524674417161514036427982273348055556214818\n97142617910342598647204516893989422179826088076852\n87783646182799346313767754307809363333018982642090\n10848802521674670883215120185883543223812876952786\n71329612474782464538636993009049310363619763878039\n62184073572399794223406235393808339651327408011116\n66627891981488087797941876876144230030984490851411\n60661826293682836764744779239180335110989069790714\n85786944089552990653640447425576083659976645795096\n66024396409905389607120198219976047599490197230297\n64913982680032973156037120041377903785566085089252\n16730939319872750275468906903707539413042652315011\n94809377245048795150954100921645863754710598436791\n78639167021187492431995700641917969777599028300699\n15368713711936614952811305876380278410754449733078\n40789923115535562561142322423255033685442488917353\n44889911501440648020369068063960672322193204149535\n41503128880339536053299340368006977710650566631954\n81234880673210146739058568557934581403627822703280\n82616570773948327592232845941706525094512325230608\n22918802058777319719839450180888072429661980811197\n77158542502016545090413245809786882778948721859617\n72107838435069186155435662884062257473692284509516\n20849603980134001723930671666823555245252804609722\n53503534226472524250874054075591789781264330331690"
         numbers (->> (clojure.string/split-lines number-string)
-                     (map clojure.string/trim))
-        sum (reduce + numbers)]
-    (letfn [(add-list-columns
-              ([x y] (add-list-columns x y 0 '()))
-              ([x y carry sum]
-               (cond
-                 (and (nil? (first x))
-                      (nil? (first y))) (reverse (if (zero? carry) sum (conj sum carry)))
-                 :else (let [x-curr (if (< 0 (count x)) (first x) 0)
-                             y-curr (if (< 0 (count y)) (first y) 0)
-                             x-rest (rest x)
-                             y-rest (rest y)
-                             curr-sum (mod (+ x-curr y-curr carry) 10)
-                             curr-carry (quot (+ x-curr y-curr carry) 10)]
-                         (recur x-rest
-                                y-rest
-                                curr-carry
-                                (conj sum curr-sum))))))]
-      (->> (clojure.string/split numbers #"")
-           (map reverse)
-           (reduce add-list-columns)
-           (reverse)
-           (take 10)
-           (clojure.string/join)))))
+                     (map clojure.string/trim)
+                     (map read-string))]
+    (->> numbers
+         (reduce +)
+         (str)
+         (take 10)
+         (clojure.string/join ""))))
 
 (defn problem-14
   "The following iterative sequence is defined for the set of positive integers:
-
   n → n/2 (n is even)
   n → 3n + 1 (n is odd)
-
   Using the rule above and starting with 13, we generate the following sequence:
-
   13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1
   It can be seen that this sequence (starting at 13 and finishing at 1) contains 10 terms. Although it has not been proved yet (Collatz Problem), it is thought that all starting numbers finish at 1.
-
   Which starting number, under one million, produces the longest chain?
-
   NOTE: Once the chain starts the terms are allowed to go above one million."
   []
   (letfn [(collatz
@@ -323,43 +330,148 @@
              (cond (= 1 n) (do (conj! t 1)
                                (persistent! t))
                    (even? n) (recur (/ n 2) (conj! t n))
-                   (odd? n) (recur (inc (* 3 n)) (conj! t n)))))
-          (collatz-length
-           ([n]
-            (collatz-length n 0))
-           ([n length]
-            (cond (= 1 n) (inc length)
-                  (even? n) (recur (/ n 2) (inc length))
-                  (odd? n) (recur (inc (* n 3)) (inc length)))))]
+                   (odd? n) (recur (inc (* 3 n)) (conj! t n)))))]
     (->> (range 1 1000001)
          (pmap (fn [n] (do
                          (when (zero? (rem n 10000))
                            (println n))
                          {:key n :count (count (collatz n))})))
          (apply max-key :count)
-         (:key))
-    #_(->> (for [n (iterate inc 1)
-                 :let [c (collatz n)]
-                 :while (<= n 1000000)]
-             {:key n :count (count c)})
-        (map (fn [x] (let [n (:key x)
-                           c (:count x)]
-                       (do (when (zero? (rem n 10000))
-                             (println (str "[" n "]:" c)))
-                           x))))
-        (apply max-key :count)
-        (:key))
-    #_(->> (for [n (iterate inc 1)
-                 :let [length (collatz-length n)]
-                 :while (<= n 1000000)]
-             [n length])
-        (reduce (fn [[max-index max-length] [n length]]
-                  (do (when (zero? (rem n 10000))
-                        (println n length)))
-                  (if  (> length max-length)
-                    [n length]
-                    [max-index max-length]))
-                [-1 -1])
-        (first))))
+         (:key))))
 
-(time (println (problem-14)))
+(defn problem-16
+  "2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+  What is the sum of the digits of the number 2^1000?"
+  []
+  (->> (repeat 2)
+       (take 1000)
+       (reduce *')
+       (str)
+       (map (comp read-string str))
+       (reduce +)))
+
+(defn problem-17
+  "If the numbers 1 to 5 are written out in words: one, two, three, four, five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+  If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?
+  NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters. The use of \"and\" when writing out numbers is in compliance with British usage."
+  []
+  (let [number-to-english-map {0 ""
+                               1 "one"
+                               2 "two"
+                               3 "three"
+                               4 "four"
+                               5 "five"
+                               6 "six"
+                               7 "seven"
+                               8 "eight"
+                               9 "nine"
+                               10 "ten"
+                               11 "eleven"
+                               12 "twelve"
+                               13 "thirteen"
+                               14 "fourteen"
+                               15 "fifteen"
+                               16 "sixteen"
+                               17 "seventeen"
+                               18 "eighteen"
+                               19 "nineteen"
+                               20 "twenty"
+                               30 "thirty"
+                               40 "forty"
+                               50 "fifty"
+                               60 "sixty"
+                               70 "seventy"
+                               80 "eighty"
+                               90 "ninety"
+                               100 "hundred"
+                               1000 "thousand"}]
+    (letfn [(convert-vector-to-english
+              ([num-vec]
+               (convert-vector-to-english num-vec ""))
+              ([num-vec carry]
+               (let [next (vec (drop 1 num-vec))]
+                 (match [num-vec]
+                   [[ones]]
+                   (str carry
+                        (number-to-english-map ones))
+                   [[tens ones]]
+                   (str carry
+                        (let [sum (+ (* tens 10) ones)]
+                          (if (< sum 20)
+                            (number-to-english-map sum)
+                            (str (number-to-english-map (* tens 10))
+                                 (when-not (zero? ones)
+                                   (str " " (number-to-english-map ones)))))))
+                   [[hundreds tens ones]]
+                   (recur next
+                          (str carry
+                               (when (pos-int? hundreds)
+                                 (str (number-to-english-map hundreds) " hundred"))
+                               (when (some pos-int? [tens ones])
+                                 " and ")))
+                   [[thousands hundreds tens ones]]
+                   (recur next
+                          (str (when (pos-int? thousands)
+                                 (str (number-to-english-map thousands) " thousand"))
+                               (when (some pos-int? [hundreds tens ones])
+                                 " ")))))))
+            (number-to-english
+             ([n] (let [number-vec (vec (map (comp read-string str) (str n)))]
+                    (convert-vector-to-english number-vec))))]
+      (->> (range 1 1001)
+           (map number-to-english)
+           (clojure.string/join " ")
+           (map str)
+           (filter #(not= " " %))
+           (count)))))
+
+(defn problem-18
+  "By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
+
+  3
+  7 4
+  2 4 6
+  8 5 9 3
+
+  That is, 3 + 7 + 4 + 9 = 23.
+
+  Find the maximum total from top to bottom of the triangle below:
+
+  75
+  95 64
+  17 47 82
+  18 35 87 10
+  20 04 82 47 65
+  19 01 23 75 03 34
+  88 02 77 73 07 63 67
+  99 65 04 28 06 16 70 92
+  41 41 26 56 83 40 80 70 33
+  41 48 72 33 47 32 37 16 94 29
+  53 71 44 65 25 43 91 52 97 51 14
+  70 11 33 28 77 73 17 78 39 68 17 57
+  91 71 52 38 17 14 91 43 58 50 27 29 48
+  63 66 04 68 89 53 67 30 73 16 69 87 40 31
+  04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
+
+  NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)"
+  []
+  (let [number-string "75\n95 64\n17 47 82\n18 35 87 10\n20 04 82 47 65\n19 01 23 75 03 34\n88 02 77 73 07 63 67\n99 65 04 28 06 16 70 92\n41 41 26 56 83 40 80 70 33\n41 48 72 33 47 32 37 16 94 29\n53 71 44 65 25 43 91 52 97 51 14\n70 11 33 28 77 73 17 78 39 68 17 57\n91 71 52 38 17 14 91 43 58 50 27 29 48\n63 66 04 68 89 53 67 30 73 16 69 87 40 31\n04 62 98 27 23 09 70 98 73 93 38 53 60 04 23"
+        number-lists (->> number-string
+                          (clojure.string/split-lines)
+                          (map #(clojure.string/split % #" "))
+                          (map (fn [number-as-string-list]
+                                 (->> number-as-string-list
+                                      #_"Remove leading 0 from number strings and read them in as ints"
+                                      (map (fn [number-str]
+                                             (let [digit-str-list (map str number-str)]
+                                               (->> (if (= "0" (first digit-str-list))
+                                                      (drop 1 digit-str-list)
+                                                      digit-str-list)
+                                                    (clojure.string/join)
+                                                    (read-string)))))
+                                      (partition 2 1 [])))))]
+    (->> (for [number-list number-lists]
+           (for [n number-list]
+             (println n))))))
+
+#_(clojure.pprint/pprint (last (problem-18)))

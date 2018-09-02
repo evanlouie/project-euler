@@ -16,3 +16,5 @@ pom.xml
 .project
 .settings
 .cljs_node_repl
+
+.DS_Store

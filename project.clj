@@ -14,13 +14,13 @@
 
   :plugins [[lein-figwheel "0.5.16"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
-
+  
   :source-paths ["src"]
-
+  
   :cljsbuild {:builds
               [{:id "dev"
                 :source-paths ["src"]
-
+                
                 ;; The presence of a :figwheel configuration here
                 ;; will cause figwheel to inject the figwheel client
                 ;; into your build
@@ -30,7 +30,7 @@
                            ;; started and compiled your application.
                            ;; Comment this out once it no longer serves you.
                            :open-urls ["http://localhost:3449/index.html"]}
-
+                
                 :compiler {:main project-euler.core
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/project_euler.js"
@@ -47,57 +47,58 @@
                 :compiler {:output-to "resources/public/js/compiled/project_euler.js"
                            :main project-euler.core
                            :optimizations :advanced
-                           :pretty-print false}}
-               ;; This build is capable of self-hosting
-               ;; https://clojurescript.org/guides/self-hosting
-               ;; {:id "complex"
-               ;;  :source-paths ["src"]
-               ;;  :compiler {:output-to "resources/public/js/compiled/project_euler.js"
-               ;;             :main project-euler.core
-               ;;             :optimizations :simple
-               ;;             :pretty-print false
-               ;;             :optimize-constants true
-               ;;             :static-fns true}}
-               ]}
-
+                           :pretty-print false}}]}
+  ;; This build is capable of self-hosting
+  ;; https://clojurescript.org/guides/self-hosting
+  ;; {:id "complex"
+  ;;  :source-paths ["src"]
+  ;;  :compiler {:output-to "resources/public/js/compiled/project_euler.js"
+  ;;             :main project-euler.core
+  ;;             :optimizations :simple
+  ;;             :pretty-print false
+  ;;             :optimize-constants true
+  ;;             :static-fns true}}
+  
+  
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
              ;; :server-ip "127.0.0.1"
-
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
-
-             ;; Start an nREPL server into the running figwheel process
-             ;; :nrepl-port 7888
-
-             ;; Server Ring Handler (optional)
-             ;; if you want to embed a ring handler into the figwheel http-kit
-             ;; server, this is for simple ring servers, if this
-
-             ;; doesn't work for you just run your own server :) (see lein-ring)
-
-             ;; :ring-handler hello_world.server/handler
-
-             ;; To be able to open files in your editor from the heads up display
-             ;; you will need to put a script on your path.
-             ;; that script will have to take a file path and a line number
-             ;; ie. in  ~/bin/myfile-opener
-             ;; #! /bin/sh
-             ;; emacsclient -n +$2 $1
-             ;;
-             ;; :open-file-command "myfile-opener"
-
-             ;; if you are using emacsclient you can just use
-             ;; :open-file-command "emacsclient"
-
-             ;; if you want to disable the REPL
-             ;; :repl false
-
-             ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
-
-             ;; to pipe all the output to the repl
-             ;; :server-logfile false
-};; Setting up nREPL for Figwheel and ClojureScript dev
+             
+             :css-dirs ["resources/public/css"]} ;; watch and update CSS
+  
+  ;; Start an nREPL server into the running figwheel process
+  ;; :nrepl-port 7888
+  
+  ;; Server Ring Handler (optional)
+  ;; if you want to embed a ring handler into the figwheel http-kit
+  ;; server, this is for simple ring servers, if this
+  
+  ;; doesn't work for you just run your own server :) (see lein-ring)
+  
+  ;; :ring-handler hello_world.server/handler
+  
+  ;; To be able to open files in your editor from the heads up display
+  ;; you will need to put a script on your path.
+  ;; that script will have to take a file path and a line number
+  ;; ie. in  ~/bin/myfile-opener
+  ;; #! /bin/sh
+  ;; emacsclient -n +$2 $1
+  ;;
+  ;; :open-file-command "myfile-opener"
+  
+  ;; if you are using emacsclient you can just use
+  ;; :open-file-command "emacsclient"
+  
+  ;; if you want to disable the REPL
+  ;; :repl false
+  
+  ;; to configure a different figwheel logfile path
+  ;; :server-logfile "tmp/logs/figwheel-logfile.log"
+  
+  ;; to pipe all the output to the repl
+  ;; :server-logfile false
+  
+  ;; Setting up nREPL for Figwheel and ClojureScript dev
   ;; Please see:
   ;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.4"]
