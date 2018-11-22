@@ -44,15 +44,23 @@
   "A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
   Find the largest palindrome made from the product of two 3-digit numbers."
   []
-  (letfn
-   [(palindrome? ([num] (= (str num)
-                           (apply str (reverse (str num))))))]
-    (->> (for [x (range 1000)
-               y (range 1000)
-               :let [product (* x y)]
-               :when (palindrome? product)]
-           product)
-         (apply max))))
+  (letfn [(palindrome?
+            ([number]
+             (= (str number)
+                (apply str (reverse (str number))))))]
+    (let [largest-palindrome (atom 0)]
+      (->> (for [x (range 1000)
+                 y (range 1000)
+                 :let [product (* x y)]
+                 :when (palindrome? product)]
+             product)
+           (map (fn [product]
+                  (do
+                    (when (> product @largest-palindrome)
+                      (swap! largest-palindrome (fn [_] product))
+                      (println @largest-palindrome))
+                    product)))
+           (apply max)))))
 
 (defn problem-5
   "2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
@@ -88,17 +96,16 @@
   "By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
   What is the 10 001st prime number?"
   []
-  (letfn [(isPrime?
-            ([n] (isPrime? n 2))
-            ([n start] (cond
-                         (> start (Math/sqrt n)) (> n 1)
-                         (< (mod n start) 1) false
-                         :else (recur n (inc start)))))]
-    (->> (for [x (range)
-               :when (isPrime? x)]
-           x)
-         (take 10001)
-         (last))))
+  (letfn [(primes
+            ([]
+             (lazy-seq (cons 2 (primes 3 [2]))))
+            ([potential prev-primes]
+             (let [divisors (take-while #(<= % (Math/sqrt potential)) prev-primes)]
+               (if (some #(zero? (mod potential %)) divisors)
+                 (lazy-seq (primes (inc potential) prev-primes))
+                 (lazy-seq (cons potential
+                                 (primes (inc potential) (conj prev-primes potential))))))))]
+    (nth (primes) 10001)))
 
 (defn problem-8
   "The four adjacent digits in the 1000-digit number that have the greatest product are 9 × 9 × 8 × 9 = 5832. 73167176531330624919225119674426574742355349194934
@@ -138,25 +145,24 @@
   There exists exactly one Pythagorean triplet for which a + b + c = 1000.
   Find the product abc."
   []
-  (let [triplets
-        (for [a (range 1 1000)
-              b (range (inc a) 1000)
-              :let [c-squared (+ (Math/pow b 2) (Math/pow a 2))
-                    c (Math/sqrt c-squared)
-                    triplet [a b c]
-                    sum (reduce + [a b c])
-                    a-squared (Math/pow a 2)
-                    b-squared (Math/pow b 2)]
-              :when (and
-                     (= (float (int c)) c)
-                     (> c b)
-                     (> b a)
-                     (= (+ a-squared b-squared) c-squared))]
-          (do
-            (println triplet)
-            triplet))]
-    (->> triplets
-         (filter (fn [list] (= 1000.0 (reduce + list))))
+  (letfn [(triplets
+            ([]
+             (for [a (range 1 1000)
+                   b (range (inc a) 1000)
+                   :let [c-squared (+ (Math/pow b 2) (Math/pow a 2))
+                         c-float (Math/sqrt c-squared)
+                         a-squared (Math/pow a 2)
+                         b-squared (Math/pow b 2)]
+                   :when (and
+                          (= (float (int c-float)) c-float)
+                          (> c-float b)
+                          (> b a)
+                          (= (+ a-squared b-squared) c-squared))]
+               (let [triplet [a b (int c-float)]]
+                 triplet))))]
+    (->> (triplets)
+         (map #(do (println %) %))
+         (filter (fn [triple] (= 1000 (reduce + triple))))
          (first)
          (reduce *))))
 
@@ -164,14 +170,18 @@
   "The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
   Find the sum of all the primes below two million."
   []
-  (letfn [(prime?
-            ([n] (prime? n 2))
-            ([n start] (cond
-                         (> start (Math/sqrt n)) (> n 1)
-                         (< (mod n start) 1) false
-                         :else (recur n (inc start)))))]
-    (->> (map inc (range 2000000))
-         (map #(if (prime? %) % 0))
+  (letfn [(primes
+            ([]
+             (lazy-seq (cons 2 (primes 3 [2]))))
+            ([potential prev-primes]
+             (let [divisors (take-while #(<= % (Math/sqrt potential)) prev-primes)]
+               (if (some #(zero? (mod potential %)) divisors)
+                 (lazy-seq (primes (inc potential) prev-primes))
+                 (lazy-seq (cons potential
+                                 (primes (inc potential) (conj prev-primes potential))))))))]
+    (->> (primes)
+         (map #(do (println %) %))
+         (take-while #(<= % 2000000))
          (reduce +))))
 
 (defn problem-11
@@ -250,18 +260,28 @@
   we can see that 28 is the first triangle number to have over five divisors.
   what is the value of the first triangle number to have over five hundred divisors?"
   []
-  (let [triangle-numbers (->> (range)
-                              (map #(reduce + (range 0 %))))
-        factors (fn [n] (into (sorted-set)
-                              (reduce concat
-                                      (for [x (range 1 (inc (Math/sqrt n)))
-                                            :when (zero? (rem n x))]
-                                        [x (/ n x)]))))]
-    (->> triangle-numbers
-         (map (fn [tri] {:triangle-number tri :factors (factors tri)}))
-         (filter #(> (count (:factors %)) 500))
-         (first)
-         (:triangle-number))))
+  (letfn [(triangles
+            ([] (triangles 1 0))
+            ([n sum] (let [next-sum (+ sum n)]
+                       (lazy-seq (cons next-sum (triangles (inc n) next-sum))))))
+          (factors
+           ([n] (reduce concat
+                        (for [x (range 1 (inc (Math/sqrt n)))
+                              :when (zero? (rem n x))]
+                          [x (/ n x)]))))]
+    (let [running-max (atom {:n 0 :factor-count 0})]
+      (->> (triangles)
+           (map (fn [triangle]
+                  (let [f (factors triangle)
+                        f-count (count f)
+                        f-map {:n triangle :factor-count f-count}]
+                    (when (> f-count (@running-max :factor-count))
+                      (swap! running-max (fn [_] f-map))
+                      (println @running-max))
+                    f-map)))
+           (filter (fn [{f-count :factor-count}] (> f-count 500)))
+           (first)
+           (:n)))))
 
 (defn problem-13
   []

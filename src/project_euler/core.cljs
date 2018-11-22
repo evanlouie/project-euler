@@ -54,14 +54,14 @@
                    :color :#666
                    :white-space :pre-wrap
                    :word-wrap :break-word
-                   :overflow :hidden
+                   :overflow :scroll
                    :max-height (if @expanded "100%" "20em")}}
           question]
-         (when (and (not @expanded)
+         #_(when (and (not @expanded)
                     should-truncate-question)
            [:code.question_text--truncated "(question truncated...)"])
          [:div.controls
-          (when should-truncate-question
+          #_(when should-truncate-question
             [:div
              [:button {:on-click #(do (reset! expanded (not @expanded)))}
               (if @expanded "Collapse" "Expand")]])
