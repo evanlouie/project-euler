@@ -170,17 +170,28 @@
   "The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
   Find the sum of all the primes below two million."
   []
-  (letfn [(primes
-            ([]
-             (lazy-seq (cons 2 (primes 3 [2]))))
-            ([potential prev-primes]
-             (let [divisors (take-while #(<= % (Math/sqrt potential)) prev-primes)]
-               (if (some #(zero? (mod potential %)) divisors)
-                 (lazy-seq (primes (inc potential) prev-primes))
-                 (lazy-seq (cons potential
-                                 (primes (inc potential) (conj prev-primes potential))))))))]
-    (->> (primes)
-         (map #(do (println %) %))
+  (letfn [(prime?
+            ([n]
+             (prime? n 2))
+            ([n divisor]
+             (cond
+               (> divisor (Math/sqrt n)) (> n 1)
+               (< (mod n divisor) 1) false
+               :else (recur n (inc divisor)))))
+          #_(primes
+             ([]
+              (lazy-seq (cons 2 (primes 3 [2]))))
+             ([potential prev-primes]
+              (let [divisors (take-while #(<= % (Math/sqrt potential)) prev-primes)]
+                (if (some #(zero? (mod potential %)) divisors)
+                  (lazy-seq (primes (inc potential) prev-primes))
+                  (lazy-seq (cons potential
+                                  (primes (inc potential) (conj prev-primes potential))))))))]
+    #_(->> (primes)
+        (take-while #(<= % 2000000))
+        (reduce +))
+    (->> (range)
+         (filter prime?)
          (take-while #(<= % 2000000))
          (reduce +))))
 

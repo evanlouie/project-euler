@@ -26,14 +26,16 @@
 
   Find the sum of all the primes below two million."
   []
-  ; "Generally slower; requires machine with many cores to be faster than the lazy-seq. Lazy-seq will still generally be faster ones `n` get large enough"
-  #_(->> (range 1 2000001)
-         (pmap #(if (prime? %) % 0))
+  ;; Similar performance for both on Java. Lazy-sequences are MUCH SLOWER in JavaScript
+  #_(->> (range)
+         (filter prime?)
+         (take-while #(<= % 2000000))
          (reduce +))
   (->> (primes)
-       (map #(do (println %) %))
        (take-while #(<= % 2000000))
        (reduce +)))
 
 (defn -main []
   (time (println (problem-10))))
+
+(defn foo [] (#'problem-10))
