@@ -1,9 +1,5 @@
 (ns euler.problems
-  #?(:clj (:require [clojure.core.match :refer [match]])
-     :cljs (:require [cljs.core.match :refer-macros [match]])))
-
-;; (defn log [something] (cljs.pprint/pprint something))
-;; (defn log-string [something] (with-out-str (log something)))
+  (:require [cljs.core.match :refer-macros [match]]))
 
 (defn problem-1
   "If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
@@ -20,17 +16,12 @@
   1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
   By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms."
   []
-  (letfn [(fib
-            ([n] (fib n 0 1))
-            ([n x y] (match [n]
-                       [0] x
-                       [1] y
-                       [_] (recur (dec n) y (+ x y)))))]
-    (->> (for [x (range)
-               :let [fibn (fib x)]
-               :when (even? fibn)
-               :while (< fibn 4000000)]
-           fibn)
+  (letfn [(fibs
+            ([] (fibs 1 2))
+            ([a b] (lazy-seq (cons a (fibs b (+ a b))))))]
+    (->> (fibs)
+         (filter even?)
+         (take-while #(<= % 4000000))
          (reduce +))))
 
 (defn problem-3
@@ -136,8 +127,8 @@
         number-chars (clojure.string/split big-number-string #"")]
     (->> number-chars
          (partition-all 13 1)
-         (pmap (fn [list]
-                 (reduce * (map  #(Integer/parseInt %) list))))
+         (map (fn [list]
+                (reduce * (map  #(js/Number.parseInt %) list))))
          (apply max))))
 
 (defn problem-9
@@ -180,7 +171,7 @@
                          (< (mod n start) 1) false
                          :else (recur n (inc start)))))]
     (->> (map inc (range 2000000))
-         (pmap #(if (prime? %) % 0))
+         (map #(if (prime? %) % 0))
          (reduce +))))
 
 (defn problem-11
@@ -260,14 +251,14 @@
   what is the value of the first triangle number to have over five hundred divisors?"
   []
   (let [triangle-numbers (->> (range)
-                              (pmap #(reduce + (range 0 %))))
+                              (map #(reduce + (range 0 %))))
         factors (fn [n] (into (sorted-set)
                               (reduce concat
                                       (for [x (range 1 (inc (Math/sqrt n)))
                                             :when (zero? (rem n x))]
                                         [x (/ n x)]))))]
     (->> triangle-numbers
-         (pmap (fn [tri] {:triangle-number tri :factors (factors tri)}))
+         (map (fn [tri] {:triangle-number tri :factors (factors tri)}))
          (filter #(> (count (:factors %)) 500))
          (first)
          (:triangle-number))))
@@ -316,50 +307,33 @@
 
   NOTE: Once the chain starts the terms are allowed to go above one million."
   []
-  (letfn [(collatz
-            ([n]
-             (collatz n (transient [])))
-            ([n t]
-             (cond (= 1 n) (do (conj! t 1)
-                               (persistent! t))
-                   (even? n) (recur (/ n 2) (conj! t n))
-                   (odd? n) (recur (inc (* 3 n)) (conj! t n)))))
-          (collatz-length
-           ([n]
-            (collatz-length n 0))
-           ([n length]
-            (cond (= 1 n) (inc length)
-                  (even? n) (recur (/ n 2) (inc length))
-                  (odd? n) (recur (inc (* n 3)) (inc length)))))]
-    (->> (range 1 1000001)
-         (pmap (fn [n] (do
-                         (when (zero? (rem n 10000))
-                           (println n))
-                         {:key n :count (count (collatz n))})))
-         (apply max-key :count)
-         (:key))
-    #_(->> (for [n (iterate inc 1)
-                 :let [c (collatz n)]
-                 :while (<= n 1000000)]
-             {:key n :count (count c)})
-        (map (fn [x] (let [n (:key x)
-                           c (:count x)]
-                       (do (when (zero? (rem n 10000))
-                             (println (str "[" n "]:" c)))
-                           x))))
-        (apply max-key :count)
-        (:key))
-    #_(->> (for [n (iterate inc 1)
-                 :let [length (collatz-length n)]
-                 :while (<= n 1000000)]
-             [n length])
-        (reduce (fn [[max-index max-length] [n length]]
-                  (do (when (zero? (rem n 10000))
-                        (println n length)))
-                  (if  (> length max-length)
-                    [n length]
-                    [max-index max-length]))
-                [-1 -1])
-        (first))))
+  #_(letfn [(collatz-seq
+              ([n] (let [next-in-seq (cond
+                                       (= 1 n) nil
+                                       (even? n) (collatz-seq (/ n 2))
+                                       (odd? n) (collatz-seq (inc (* 3 n))))]
+                     (cons n next-in-seq))))]
+      (->> (range 1 1000001)
+           (map collatz-seq)
+           (map-indexed (fn [index sequence] [(inc index) (count sequence)]))
+           (reduce (fn [reduction [n seq]]
+                     (do (when (zero? (rem n 10000))
+                           (println n seq))
+                         (assoc reduction n seq))) {})
+           (apply max-key val)
+           (key)))
+  (letfn [(collatz-length
+            ([n] (collatz-length n 0))
+            ([n length] (cond
+                          (= 1 n) (inc length)
+                          (even? n) (recur (/ n 2) (inc length))
+                          (odd? n) (recur (inc (* 3 n)) (inc length)))))]
+    (let [memory (atom {:n nil :length nil})]
+      (doseq [n (range 1 1000001)]
+        (let [length (collatz-length n)]
+          (when (> length (:length @memory))
+            (do
+              (println n length)
+              (swap! memory assoc :n n :length length)))))
+      (:n @memory))))
 
-(time (println (problem-14)))

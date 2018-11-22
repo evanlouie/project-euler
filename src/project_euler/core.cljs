@@ -41,8 +41,7 @@
         [:div.euler_problem.question
          {:style {:overflow :hidden
                   :flex "1 1 400px"
-                  :margin "0 1em"
-                  :border-bottom "1px solid #f2f2f0"}}
+                  :margin "0 1em"}}
          [:div.meta
           [:h2
            {:style {:margin-bottom 0}}
@@ -58,30 +57,31 @@
                    :overflow :hidden
                    :max-height (if @expanded "100%" "20em")}}
           question]
-         [:pre.question_text--truncated
-          (when (and (not @expanded)
-                     should-truncate-question) "(question truncated...)")]
+         (when (and (not @expanded)
+                    should-truncate-question)
+           [:code.question_text--truncated "(question truncated...)"])
          [:div.controls
-          (comment [:div
-                    [:button
-                     {:on-click #(do
-                                   (if (nil? @code)
-                                     (reset! code (str answer))
-                                     (reset! code nil)))}
-
-                     (if (nil? @code)
-                       "Show Code"
-                       "Hide Code")]
-                    [:pre
-                     {:style {:white-space :pre-wrap
-                              :word-wrap :break-word
-                              :overflow :hidden}}
-                     @code]
-                    [:code (apply str @log)]])
           (when should-truncate-question
             [:div
              [:button {:on-click #(do (reset! expanded (not @expanded)))}
               (if @expanded "Collapse" "Expand")]])
+          [:div
+           [:button
+            {:on-click #(do
+                          (if (nil? @code)
+                            (reset! code (str answer))
+                            (reset! code nil)))}
+
+            (if (nil? @code)
+              "Show Code"
+              "Hide Code")]
+           (when (not (nil? @code))
+             [:pre
+              {:style {:white-space :pre-wrap
+                       :word-wrap :break-word
+                       :overflow :hidden}}
+              @code])]
+
           [:div
            [:button {:disabled @working?
                      :on-click #(do
@@ -91,7 +91,8 @@
             (cond
               (true? @working?) "Working..."
               :else "Answer")]
-           [:code ":" @answer-value]]]]))))
+           (when (not (nil? @answer-value))
+             [:code ":" @answer-value])]]]))))
 
 (defn euler []
   [:div.questions

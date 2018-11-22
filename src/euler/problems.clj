@@ -291,7 +291,7 @@
             ([n sum] (let [next-sum (+ sum n)]
                        (lazy-seq (cons next-sum (triangles (inc n) next-sum))))))
           (factors
-            ([n] (reduce concat
+           ([n] (reduce concat
                         (for [x (range 1 (inc (Math/sqrt n)))
                               :when (zero? (rem n x))]
                           [x (/ n x)]))))]
