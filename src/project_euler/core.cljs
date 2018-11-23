@@ -41,7 +41,7 @@
     (fn []
       (let [max-question-lines 20
             should-truncate-question (> (count (clojure.string/split-lines question)) max-question-lines)]
-        [:div.euler_problem.question
+        [:article.euler_problem.question
          {:style {:overflow :hidden
                   :flex "1 1 400px"
                   :margin "0 1em"}}
@@ -54,7 +54,7 @@
            [:h4 {:style {:margin-top 0}} (str "Problem " problem-number)]]]
          (when export
            [:figcaption.instructions
-            (str "Source Available: "
+            (str "Function: "
                  (clojure.string/replace (str namespace "." name) #"-" "_"))])
          [:pre.question_text
           {:style {:font-family :serif
@@ -93,9 +93,11 @@
 
 (defn euler []
   [:div
-   [:p
-    [:code "Source Available: <global_var>"]
-    " message will appear if included. Inspect the var in console to see un-compiled source."]
+   [:details
+    [:summary "README"]
+    [:p "These solutions are written in ClojureScript and compiled using the Google Closure Compiler. So understanding the actual JavaScript source is near impossible."]
+    [:code "Function: <global_var>"]
+    " names the variable which binds to the solution code. Source-Maps are available for all answers, so you can inspect those variables in your inspector to see the uncompiled ClojureScript source."]
    [:div.questions
     {:style {:display :flex :flex-wrap :wrap :justify-content :space-between :margin "0 -1em"}}
     [euler-problem
