@@ -38,4 +38,3 @@
 (defn -main []
   (time (println (problem-10))))
 
-(defn foo [] (#'problem-10))
