@@ -26,17 +26,14 @@
   NOTE: Once the chain starts the terms are allowed to go above one million."
   []
   (let [running-max (atom {:n 0 :collatz-length 0})]
-    (->> (range 1 1000001)
-         (map (fn [n] (let [c (collatz n)
-                            c-length (count c)
-                            c-map {:n n :collatz-length c-length}]
-                        (do
-                          (when (> c-length (@running-max :collatz-length))
-                            (swap! running-max (fn [_] c-map))
-                            (println @running-max))
-                          c-map))))
-         (apply max-key :collatz-length)
-         (:n))))
+    (doseq [n (range 1 1000001)
+            :let [c (collatz n)
+                  c-length (count c)
+                  c-map {:n n :collatz-length c-length}]
+            :when (> c-length (@running-max :collatz-length))]
+      (swap! running-max (fn [_] c-map))
+      (println @running-max))
+    (:n @running-max)))
 
 (defn -main []
   (time (println (problem-14)))
