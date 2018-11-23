@@ -45,9 +45,11 @@
                {:id "min"
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/project_euler.js"
+                           :output-dir "resources/public/js/compiled"
                            :main project-euler.core
                            :optimizations :advanced
-                           :pretty-print false}}]}
+                           :pretty-print false
+                           :source-map "resources/public/js/compiled/project_euler.js.map"}}]}
   ;; This build is capable of self-hosting
   ;; https://clojurescript.org/guides/self-hosting
   ;; {:id "complex"
