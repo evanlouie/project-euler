@@ -1,5 +1,5 @@
 (ns daily-coding-problem.problem-1
-  (:require [clojure.test :refer [is]]))
+  (:require [clojure.test :refer [testing is]]))
 
 (defn problem-1
   "Given a list of numbers and a number `k`, return whether any two numbers from the list add up to `k`.
@@ -17,9 +17,11 @@
                                           (- k (first numbers))
                                           (first numbers))))))
 
-(is (true? (problem-1 [10 15 3 7] 17)))
-(is (true? (problem-1 [10 0] 10)))
-(is (true? (problem-1 [1 -1] 0)))
-(is (false? (problem-1 [10] 10)))
-(is (false? (problem-1 [10 15 3] 17)))
-(is (false? (problem-1 [] 0)))
+(testing "Should be true"
+  (is (true? (problem-1 [10 15 3 7] 17)))
+  (is (true? (problem-1 [10 0] 10)))
+  (is (true? (problem-1 [1 -1] 0))))
+(testing "Should be false"
+  (is (false? (problem-1 [10] 10)))
+  (is (false? (problem-1 [10 15 3] 17)))
+  (is (false? (problem-1 [] 0))))
