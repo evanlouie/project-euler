@@ -8,14 +8,15 @@
           sorted []]
      (if (every? empty? lists)
        sorted
-       (let [firsts (map first lists)
+       (let [firsts (filter #(not (nil? %)) (map first lists))
              smallest (apply min firsts)
              times (count (filter #(= smallest %) firsts))
-             lists-without-smallest (->> (for [[first & rest :as list] lists]
-                                           (if (= first smallest)
-                                             rest
-                                             list))
-                                         (filter #(not (nil? %))))]
+             lists-without-smallest (for [[first & rest :as list] lists
+                                          :when (not (nil? first))
+                                          :let [without (if (= first smallest)
+                                                          rest
+                                                          list)]]
+                                      without)]
          (recur lists-without-smallest
                 (into sorted (repeat times smallest))))))))
 
