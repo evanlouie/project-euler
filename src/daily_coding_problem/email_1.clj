@@ -21,5 +21,5 @@
                 (into sorted (repeat times smallest))))))))
 
 (testing "Given solutions"
-  (is (= (email [[10 15 30] [12 15 20] [17 20 32]])
+  (is (= (email-1 [[10 15 30] [12 15 20] [17 20 32]])
          [10 12 15 15 17 20 20 30 32])))
