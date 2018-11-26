@@ -16,9 +16,8 @@
                                              rest
                                              list))
                                          (filter #(not (nil? %))))]
-         (recur
-          lists-without-smallest
-          (into sorted (repeat times smallest))))))))
+         (recur lists-without-smallest
+                (into sorted (repeat times smallest))))))))
 
 (testing "Given solutions"
   (is (= (email [[10 15 30] [12 15 20] [17 20 32]])
