@@ -13,12 +13,13 @@
   (loop [integers integers
          output []
          curr-index 0]
-    (if (>= curr-index (count integers)) output
-        (let [curr-number (get integers curr-index)
-              curr-product (->> integers
-                                (filter #(not= % curr-number))
-                                (reduce *))]
-          (recur integers (conj output curr-product) (inc curr-index))))))
+    (if (>= curr-index (count integers))
+      output
+      (let [curr-number (get integers curr-index)
+            curr-product (->> integers
+                              (filter #(not= % curr-number))
+                              (reduce *))]
+        (recur integers (conj output curr-product) (inc curr-index))))))
 
 (testing "Given solutions"
   (is (= (problem-2 [1 2 3 4 5])
