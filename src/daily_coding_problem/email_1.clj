@@ -11,8 +11,8 @@
        (let [firsts (map first lists)
              smallest (apply min firsts)
              times (count (filter #(= smallest %) firsts))
-             lists-without-smallest (->> (for [[f & rest :as list] lists]
-                                           (if (= f smallest)
+             lists-without-smallest (->> (for [[first & rest :as list] lists]
+                                           (if (= first smallest)
                                              rest
                                              list))
                                          (filter #(not (nil? %))))]
