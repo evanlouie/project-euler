@@ -1,7 +1,7 @@
 (ns daily-coding-problem.email-1
   (:require [clojure.test :refer [testing is]]))
 
-(defn email
+(defn email-1
   "return a new sorted merged list from K sorted lists, each with size N."
   ([list-of-lists]
    (loop [lists list-of-lists
