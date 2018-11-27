@@ -10,16 +10,16 @@
 
   Follow-up: what if you can't use division?"
   [integers]
-  (loop [integers integers
-         output []
+  (loop [ints integers
+         multiplied []
          curr-index 0]
-    (if (>= curr-index (count integers))
-      output
-      (let [curr-number (get integers curr-index)
-            curr-product (->> integers
+    (if (>= curr-index (count ints))
+      multiplied
+      (let [curr-number (get ints curr-index)
+            curr-product (->> ints
                               (filter #(not= % curr-number))
                               (reduce *))]
-        (recur integers (conj output curr-product) (inc curr-index))))))
+        (recur ints (conj multiplied curr-product) (inc curr-index))))))
 
 (testing "Given solutions"
   (is (= (problem-2 [1 2 3 4 5])
