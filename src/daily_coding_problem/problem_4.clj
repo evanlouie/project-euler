@@ -1,6 +1,29 @@
 (ns daily-coding-problem.problem-4
   (:require [clojure.test :refer [testing is]]))
 
+(defn- abs
+  [n] (max n (- n)))
+
+(defn- first-missing-positive
+  ([list-of-numbers]
+   (let [positives (atom (into [] (filter (fn [n] (pos-int? n)) list-of-numbers)))
+         end (count @positives)]
+     (doseq [index (range end)
+             :let [value (abs (get @positives index))]]
+       (when (<= value end)
+         (let [target (get @positives (dec value))
+               negative-value (if (pos? target)
+                                (- target)
+                                target)]
+           (swap! positives assoc (dec value) negative-value))))
+     (inc (if (every? neg? @positives)
+            (count @positives)
+            (->> @positives
+                 (map-indexed (fn [idx i] {:index idx :i i}))
+                 (filter (fn [{index :index i :i}] (pos? i)))
+                 first
+                 :index))))))
+
 (defn problem-4
   "This problem was asked by Stripe.
 
@@ -9,12 +32,8 @@
   For example, the input [3, 4, -1, 1] should give 2. The input [1, 2, 0] should give 3.
 
   You can modify the input array in-place."
-  ([ints]
-   (let [positive-set (into #{} (filter pos-int? ints))]
-     (->> (range)
-          (filter pos-int?)
-          (filter #(not (contains? positive-set %)))
-          (first)))))
+  ([list-of-numbers]
+   (first-missing-positive list-of-numbers)))
 
 (testing "Given solutions"
   (is (= (problem-4 [3 4 -1 1]) 2))
